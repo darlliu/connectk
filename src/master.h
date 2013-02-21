@@ -76,6 +76,9 @@ class Master
             gravity(0),
 			GameTree(new KTreeNode)
         {
+#if LOGGING
+            f.open("logs.txt");
+#endif
             // our tree, don't lose it!
         };                             /* constructor */
 
@@ -83,8 +86,11 @@ class Master
 
         mv getOneMove(states States,movetype mt=MY_PIECE)
         {
-            for (int i=0; i<ROWS; i++)
-                for (int j=0; j<COLS; j++)
+#if LOGGING
+            f<<"Now determining move"<<std::endl;
+#endif
+            for (int i=0; i<COLS; i++)
+                for (int j=0; j<ROWS; j++)
                 {
                     if (States[i][j]==NO_PIECE) 
                         return mv(_mv(i,j),mt);
@@ -94,8 +100,8 @@ class Master
         std::vector<mv> getAllMoves(states States,movetype mt=MY_PIECE)
         {
             std::vector<mv> out;
-            for (int i=0; i<ROWS; i++)
-                for (int j=0; j<COLS; j++)
+            for (int i=0; i<COLS; i++)
+                for (int j=0; j<ROWS; j++)
                 {
                     if (States[i][j]==NO_PIECE) 
                         out.push_back( mv(_mv(i,j),mt) );
@@ -137,7 +143,13 @@ class Master
         virtual void main_routine()
         {
             while (!listen(1));
+#if LOGGING
+            f<<"Listened successfully"<<std::endl;
+#endif
             auto m=getOneMove(GameStates);
+#if LOGGING
+            f<<"Move get"<<std::endl;
+#endif
             tell_move(m);
             while (listen(false))
             {
@@ -164,7 +176,9 @@ class Master
         // std vector does deep copy by default so a reassignment can be used to make copy
         // this is a state, NOT the search tree and not describe the search space. constant size
         
-
+#if LOGGING
+        std::ofstream f;
+#endif
         
 
 }; /* -----  end of class Master  ----- */

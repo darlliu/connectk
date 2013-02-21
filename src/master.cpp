@@ -12,7 +12,7 @@
 #include"master.h"
 #include<iostream>
 #include<string>
-#include <stdlib.h>
+#include<stdlib.h>
 using namespace std;
 /* 
  * ===  FUNCTION  ======================================================================
@@ -27,14 +27,16 @@ bool Master::listen(bool INIT=0)
 	string begin =  "makeMoveWithState:"; 
 	string end = "end";
 	string input;
-    cin >> input;
 #if LOGGING
-    std::ofstream f;
-    f.open("logs.txt");
     f<<"LISTENING, INIT IS "<<INIT<<endl;
 #endif
+    cin >> input;
+    while (true)
     if (input == end){
-			return 0;
+#if LOGGING
+        f<<"DONE "<< input <<endl;
+#endif
+	return 1;
     }
     else if (input == begin){
         //first I want the gravity, then number of cols, then number of rows, then the col of the last move, then the row of the last move then the values for all the spaces.
@@ -54,39 +56,42 @@ bool Master::listen(bool INIT=0)
             _gravity = false;
         }
 #if LOGGING
-        f<<g<<endl;
+        f<<"grav:"<<g<<endl;
 #endif 
         cin >> g;
         int colCount = g;
-        cin >>g;
 #if LOGGING
-        f<<g<<endl;
+        f<<"col: "<<g<<endl;
 #endif 
+        cin >>g;
         int rowCount = g;
+#if LOGGING
+        f<<"row: "<<g<<endl;
+#endif 
         cin >>g;
-#if LOGGING
-        f<<g<<endl;
-#endif 
         int lastMoveCol = g;
-        cin >> g;
 #if LOGGING
         f<<g<<endl;
 #endif 
+        cin >> g;
         int lastMoveRow = g;
+#if LOGGING
+        f<<g<<endl;
+#endif 
 
         //add the deadline here: 
         int deadline = -1;
         cin >>g;
+        deadline = g;
 #if LOGGING
         f<<g<<endl;
 #endif 
-        deadline = g;
 
         cin >> g;
+        int k = g;
 #if LOGGING
         f<<g<<endl;
 #endif 
-        int k = g;
 
         //now the values for each space.
 
@@ -100,12 +105,12 @@ bool Master::listen(bool INIT=0)
         */
         if (INIT)
         {
-            GameStates.resize(rowCount);
-            NewStates.resize(rowCount);
-            for (int i=0; i<rowCount; i++)
+            GameStates.resize(colCount);
+            NewStates.resize(colCount);
+            for (int i=0; i<colCount; i++)
             {
-                GameStates[i].resize(colCount);
-                NewStates[i].resize(colCount);
+                GameStates[i].resize(rowCount);
+                NewStates[i].resize(rowCount);
             }
         }
 		int temp;
@@ -114,13 +119,16 @@ bool Master::listen(bool INIT=0)
                 cin >>temp;
 				GameStates[col][row]=(movetype)temp;
 #if LOGGING
-                f<<g<<"\t";
+                f<<temp<<"\t";
 #endif 
             }
 #if LOGGING
-                f<<g<<endl;
+                f<<endl;
 #endif 
         }
+#if LOGGING
+                f<<"parsing done";
+#endif 
         {
             COLS=colCount;
             ROWS=rowCount;
@@ -129,12 +137,14 @@ bool Master::listen(bool INIT=0)
             time_limit=deadline;
             NewStates=GameStates;
             lastmove=mv(_mv(lastMoveRow,lastMoveCol),OPPONENT_PIECE);
-        }
-		return 1;
+       }
+        return 1;
     }
     else {
-        cout<<"unrecognized command "<< input <<endl;
-        return 0;
+#if LOGGING
+        f<<"unrecognized command "<< input <<endl;
+#endif
+        continue;
     }
     //otherwise loop back to the top and wait for proper input.
 };
@@ -142,6 +152,9 @@ bool Master::listen(bool INIT=0)
 bool Master::tell_move(mv mymove)
 {
     string madeMove = "ReturningTheMoveMade";
+#if LOGGING
+    f << madeMove<<" "<< mymove.first.first<<" " << mymove.first.second <<endl;
+#endif
     cout << madeMove<<" "<< mymove.first.first<<" " << mymove.first.second <<endl;
     return true;
 };

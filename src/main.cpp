@@ -1,6 +1,6 @@
 #include "master.h"
 
-int main(char* argc, char** argv)
+int main()
 {
 	Master m1;
 	m1.main_routine();

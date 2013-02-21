@@ -11,6 +11,7 @@
  */
 #ifndef UTILS_H
 #define UTILS_H
+#include"headers.h"
 typedef enum
 {
     OPPONENT_PIECE=-1,
