@@ -31,9 +31,6 @@ public:
 	Move makeMove();
 
 
-
-
-
 };
 
 
