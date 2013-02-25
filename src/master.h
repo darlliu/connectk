@@ -86,6 +86,7 @@ class Master
 
         mv getOneMove(states States,movetype mt=MY_PIECE)
         {
+            //get one legal move without excluding any
 #if LOGGING
             f<<"Now determining move"<<std::endl;
 #endif
@@ -97,6 +98,26 @@ class Master
                 }
             return mv(_mv(-1,-1),NO_PIECE);
         };
+        mv getOneMove(states States,KTreeNode_ node,movetype mt=MY_PIECE)
+        {
+            //get one legal move except if it is already in the node's children
+#if LOGGING
+            f<<"Now determining move"<<std::endl;
+#endif
+            for (int i=0; i<COLS; i++)
+                for (int j=0; j<ROWS; j++)
+                {
+                    if (States[i][j]==NO_PIECE) 
+                        //we check if the move is made in the children already
+                        for (auto it=node->children.begin(); it!=node->children.end(); i++)
+                            if ((*it)->coord.first==i && (*it)->coord.second==j) goto THEN;
+                        return mv(_mv(i,j),mt);
+                    THEN:
+                        continue;
+                }
+            return mv(_mv(-1,-1),NO_PIECE);
+        };
+
         std::vector<mv> getAllMoves(states States,movetype mt=MY_PIECE)
         {
             std::vector<mv> out;
@@ -105,6 +126,23 @@ class Master
                 {
                     if (States[i][j]==NO_PIECE) 
                         out.push_back( mv(_mv(i,j),mt) );
+                }
+            return out;
+        };
+        std::vector<mv> getAllMoves(states States,KTreeNode_ node,movetype mt=MY_PIECE)
+        {
+			//this is the version that checks the children, use only when necessary
+            std::vector<mv> out;
+            for (int i=0; i<COLS; i++)
+                for (int j=0; j<ROWS; j++)
+                {
+                    if (States[i][j]==NO_PIECE) 
+                        //we check if the move is made in the children already
+                        for (auto it=node->children.begin(); it!=node->children.end(); i++)
+                            if ((*it)->coord.first==i && (*it)->coord.second==j) goto THEN;
+                        out.push_back( mv(_mv(i,j),mt) );
+                    THEN:
+                        continue;
                 }
             return out;
         };
@@ -129,7 +167,15 @@ class Master
             }
             else return false;
         };
-       
+        bool mark_move(mv move)
+        {
+            auto c=move.first.first;
+            auto r=move.first.first;
+            if (GameStates[c][r]!=NO_PIECE)
+                return false;
+            else
+                GameStates[c][r]=move.second;
+        };
         void update_frontier();
         void IDSearch();
         void expand_one_child(KTreeNode_ parent);

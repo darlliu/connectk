@@ -117,7 +117,9 @@ bool Master::listen(bool INIT=0)
         for (int col =0; col<colCount; col++){
             for (int row =0; row<rowCount; row++){
                 cin >>temp;
-				GameStates[col][row]=(movetype)temp;
+                //actually by the email from the Java shell author 
+                //this does NOT parse the correct games board, then why is it still here?
+				//GameStates[col][row]=(movetype)temp;
 #if LOGGING
                 f<<temp<<"\t";
 #endif 
@@ -136,7 +138,8 @@ bool Master::listen(bool INIT=0)
             gravity=_gravity;
             time_limit=deadline;
             NewStates=GameStates;
-            lastmove=mv(_mv(lastMoveRow,lastMoveCol),OPPONENT_PIECE);
+            lastmove=mv(_mv(lastMoveCol,lastMoveRow),OPPONENT_PIECE);
+            mark_move(lastmove);
        }
         return 1;
     }
@@ -156,5 +159,29 @@ bool Master::tell_move(mv mymove)
     f << madeMove<<" "<< mymove.first.first<<" " << mymove.first.second <<endl;
 #endif
     cout << madeMove<<" "<< mymove.first.first<<" " << mymove.first.second <<endl;
+    //lets do our own book keeping.
+    mark_move(mymove);
     return true;
+};
+
+
+/* 
+ * ===  FUNCTION  ======================================================================
+ *         Name:  expand_one_child
+ *  Description:  expand the current node with one child, note that we need to check 
+ *                child nodes if we don't expand all of them at the same time
+ *  Var. In:      parent tree (one node)
+ *  Output:       none, node is expand
+ *  Note:         when we expand, we can do one of the following:
+ *                1, expand every possible child, no need to recheck, proceed to check,
+ *                this is NOT depth first though b/c at each depth everything must be 
+ *                expanded
+ *                2, expand one child and when later back to expand more but has to 
+ *                check that the expanded node is NOT already assigned (use the 
+ *                signature passing the current node;
+ * =====================================================================================
+ */
+void Master::expand_one_child(KTreeNode_ parent)
+{
+    
 };
