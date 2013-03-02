@@ -1,1 +1,5 @@
 LISTENING, INIT IS 1
+unrecognized command 
+unrecognized command 
+unrecognized command 
+unrecognized command 

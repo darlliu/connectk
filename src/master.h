@@ -32,7 +32,7 @@ class KTreeNode
     public:
         /* ====================  LIFECYCLE     ======================================= */
         KTreeNode ():
-            TotalValue(0),pruned(0),depth(999)
+            TotalValue(0),depth(999)
         {coord.first=0; coord.second=0;};
         /* constructor */
         // here is out overloaded operator for priority queue
@@ -42,8 +42,6 @@ class KTreeNode
         //in this case the traverse counts per operation is limited by depth which is small
         int TotalValue;
         //the total value of features given by some heuristic traversal operation
-        bool pruned;
-        //whether or not this node is pruned. If so, terminate search.
         unsigned depth;
         //depth of this node. If this turns out unnecessary then we can get rid of it.
         _mv coord;
@@ -109,8 +107,8 @@ class Master
                 {
                     if (States[i][j]==NO_PIECE) 
                         //we check if the move is made in the children already
-                        for (auto it=node->children.begin(); it!=node->children.end(); i++)
-                            if ((*it)->coord.first==i && (*it)->coord.second==j) goto THEN;
+                        for (auto it: node->children)
+                            if (it->coord.first==i && it->coord.second==j) goto THEN;
                         return mv(_mv(i,j),mt);
                     THEN:
                         continue;
@@ -120,6 +118,9 @@ class Master
 
         std::vector<mv> getAllMoves(states States,movetype mt=MY_PIECE)
         {
+#if LOGGING
+            f<<"Now determining all moves"<<std::endl;
+#endif
             std::vector<mv> out;
             for (int i=0; i<COLS; i++)
                 for (int j=0; j<ROWS; j++)
@@ -132,14 +133,17 @@ class Master
         std::vector<mv> getAllMoves(states States,KTreeNode_ node,movetype mt=MY_PIECE)
         {
 			//this is the version that checks the children, use only when necessary
+#if LOGGING
+            f<<"Now determining all moves"<<std::endl;
+#endif
             std::vector<mv> out;
             for (int i=0; i<COLS; i++)
                 for (int j=0; j<ROWS; j++)
                 {
                     if (States[i][j]==NO_PIECE) 
                         //we check if the move is made in the children already
-                        for (auto it=node->children.begin(); it!=node->children.end(); i++)
-                            if ((*it)->coord.first==i && (*it)->coord.second==j) goto THEN;
+                        for (auto it:node->children)
+                            if ((it)->coord.first==i && (it)->coord.second==j) goto THEN;
                         out.push_back( mv(_mv(i,j),mt) );
                     THEN:
                         continue;
@@ -147,8 +151,8 @@ class Master
             return out;
         };
         /* ====================  MUTATORS      ======================================= */
-        bool listen(bool);
-        bool tell_move(mv);
+        bool listen(const bool);
+        bool tell_move(const mv&);
 
         void tick() {t0=hclock::now();};
         ms tock()
@@ -167,19 +171,21 @@ class Master
             }
             else return false;
         };
-        bool mark_move(mv move)
+        bool mark_move(states S, mv move)
         {
             auto c=move.first.first;
             auto r=move.first.first;
-            if (GameStates[c][r]!=NO_PIECE)
+            if (S[c][r]!=NO_PIECE)
                 return false;
             else
-                GameStates[c][r]=move.second;
+                S[c][r]=move.second;
+			return true;
         };
         void update_frontier();
         void IDSearch();
-        void expand_one_child(KTreeNode_ parent);
-        void expand_all_childern(KTreeNode_ parent);
+        void do_IDS(KTreeNode_, const unsigned&);
+        KTreeNode_ expand_one_child(KTreeNode_ parent);
+        void expand_all_children(KTreeNode_ parent);
         
         /* ====================  OPERATORS     ======================================= */
         /* ====================  VIRTUALS     ======================================= */
@@ -209,6 +215,7 @@ class Master
         hclock::time_point t0, t1;
         int time_limit;
         int COLS,ROWS;
+        int alpha,beta,curval;
         int K;
         mv lastmove;
         bool gravity;

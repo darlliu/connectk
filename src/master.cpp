@@ -17,12 +17,14 @@ using namespace std;
 /* 
  * ===  FUNCTION  ======================================================================
  *         Name:  listen
- *  Description:  
+ *  Description:  modified from CPP shell provided, simply listens from stdin
  *  Var. In:      
  *  Output:       
  * =====================================================================================
+ *
  */
-bool Master::listen(bool INIT=0)
+    bool 
+Master::listen(const bool INIT=0)
 {
 	string begin =  "makeMoveWithState:"; 
 	string end = "end";
@@ -137,9 +139,9 @@ bool Master::listen(bool INIT=0)
             K=k;
             gravity=_gravity;
             time_limit=deadline;
-            NewStates=GameStates;
             lastmove=mv(_mv(lastMoveCol,lastMoveRow),OPPONENT_PIECE);
-            mark_move(lastmove);
+            mark_move(GameStates,lastmove);
+            NewStates=GameStates;
        }
         return 1;
     }
@@ -152,7 +154,8 @@ bool Master::listen(bool INIT=0)
     //otherwise loop back to the top and wait for proper input.
 };
 
-bool Master::tell_move(mv mymove)
+    bool
+Master::tell_move(const mv& mymove)
 {
     string madeMove = "ReturningTheMoveMade";
 #if LOGGING
@@ -160,7 +163,7 @@ bool Master::tell_move(mv mymove)
 #endif
     cout << madeMove<<" "<< mymove.first.first<<" " << mymove.first.second <<endl;
     //lets do our own book keeping.
-    mark_move(mymove);
+    mark_move(GameStates,mymove);
     return true;
 };
 
@@ -181,7 +184,124 @@ bool Master::tell_move(mv mymove)
  *                signature passing the current node;
  * =====================================================================================
  */
-void Master::expand_one_child(KTreeNode_ parent)
+    KTreeNode_
+Master::expand_one_child(KTreeNode_ parent)
 {
-    
+    auto temp=getOneMove(NewStates, parent);
+    //here we ask that NewStates is already altered.
+	KTreeNode_ child(new KTreeNode);
+	child->coord=temp.first;
+	child->depth=(parent->depth)+1;
+	parent->children.push_back(child);
+    return child;
 };
+    void
+Master::expand_all_children ( KTreeNode_ parent )
+{
+    auto temp=getAllMoves(NewStates, parent);
+    for (auto it: temp)
+    {
+		KTreeNode_ child(new KTreeNode);
+		child->coord=it.first;
+		child->depth=(parent->depth)+1;
+		parent->children.push_back(child);
+    }
+    return ;
+}		/* -----  end of function Master::expand_all_children  ----- */
+
+/* 
+ * ===  FUNCTION  ======================================================================
+ *         Name:  Master::update_frontier
+ *  Description:  Update the current game node after it is reassigned
+ *  Var. In:      Parent
+ *  Output:       none
+ * =====================================================================================
+ */
+    void
+Master::update_frontier ( )
+{
+	expand_all_children(GameTree);
+    //note that we only expand frontier at each new round, thus using GameStates is okay
+    for (auto it: GameTree->children)
+    {
+		GameTree->children.push_back(it);
+    }
+    return ;
+}		/* -----  end of function Master::update_frontier  ----- */
+
+/* 
+ * ===  FUNCTION  ======================================================================
+ *         Name:  Master::IDSearch
+ *  Description:  This is our iterative deepening search algorithm.
+ *                Here we assume a few things, first, the frontier is already expanded
+ *                second, for each depth n, we expand depth first to n and expand all 
+ *                children at n (this follows from the logic of breadth first expandsion)
+ *                Third, for each leaf node at n, we assess the with heuristics (using 
+ *                NewStates, and start accounting for alpha and beta values.
+ *                Fourth, when this is done, 
+ *  Var. In:      None, traverse is only stopped if time is up
+ *  Output:       None, upon finish the priority queue should be ready to pop
+ * =====================================================================================
+ */
+    void
+Master::IDSearch ( )
+{
+    unsigned n=1;
+    do
+    {
+        //pruning parameters
+        alpha=-100;
+        beta=100;
+        //at each iteration we search in order of priority
+        //for that we copy the priority queue once
+        auto temp_queue=Frontier;
+        do
+        {
+            NewStates=GameStates;
+            auto root=temp_queue.top();
+            do_IDS(root,n);
+            root->TotalValue=curval;
+            root->children.clear();
+            //this makes memory linear
+            temp_queue.pop();
+            // go to the next node
+        }
+        while (!temp_queue.empty());
+        
+        n++;
+    }
+    while (!time_up());
+    return ;
+}		/* -----  end of function Master::IDSearch  ----- */
+    void
+Master::do_IDS ( KTreeNode_ root , const unsigned& depth)
+{
+    if (alpha>beta) return;
+    //first, what was the last move (temp) played?
+    //if depth is divisible by 2, then it is MY_PIECE 
+    //else OPPONENT_PIECE
+    if (root->depth%2==0)
+        mark_move(NewStates,mv(root->coord,MY_PIECE));
+    else
+        mark_move(NewStates,mv(root->coord,OPPONENT_PIECE));
+    if (root->depth<=depth)
+    {
+        expand_all_children(root);
+        for (auto it:root->children)
+            do_IDS(it, depth+1);
+        //root->TotalValue=curval;
+        //annotate current values;
+    }
+    else
+    {
+        alpha=-100;
+        beta=100;
+        int val=depth*2;//addheuristic();
+        if (val>curval) curval=val;
+    }
+    mark_move(NewStates,mv(root->coord,NO_PIECE));
+    //unplay this move 
+    root->children.clear();
+    //this makes linear memory
+    return;
+}		/* -----  end of function Master::do_IDS  ----- */
