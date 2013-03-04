@@ -108,11 +108,9 @@ Master::listen(const bool INIT=0)
         if (INIT)
         {
             GameStates.resize(colCount);
-            NewStates.resize(colCount);
             for (int i=0; i<colCount; i++)
             {
                 GameStates[i].resize(rowCount);
-                NewStates[i].resize(rowCount);
             }
         }
 		int temp;
@@ -133,6 +131,7 @@ Master::listen(const bool INIT=0)
 #if LOGGING
                 f<<"parsing done";
 #endif 
+		tick();
         {
             COLS=colCount;
             ROWS=rowCount;
@@ -187,17 +186,26 @@ Master::tell_move(const mv& mymove)
     KTreeNode_
 Master::expand_one_child(KTreeNode_ parent)
 {
+#if LOGGING
+    f <<"expanding a child" <<endl;
+#endif
     auto temp=getOneMove(NewStates, parent);
     //here we ask that NewStates is already altered.
 	KTreeNode_ child(new KTreeNode);
 	child->coord=temp.first;
 	child->depth=(parent->depth)+1;
 	parent->children.push_back(child);
+#if LOGGING
+	f <<"output coord is "<<temp.first.first<<" "<<temp.first.second<<"\t"<<(int)temp.second<<endl;
+#endif
     return child;
 };
     void
 Master::expand_all_children ( KTreeNode_ parent )
 {
+#if LOGGING
+    f <<"expanding all children" <<endl;
+#endif
     auto temp=getAllMoves(NewStates, parent);
     for (auto it: temp)
     {
@@ -205,6 +213,11 @@ Master::expand_all_children ( KTreeNode_ parent )
 		child->coord=it.first;
 		child->depth=(parent->depth)+1;
 		parent->children.push_back(child);
+#if LOGGING
+	f <<"output coord is "<<it.first.first<<" "\
+		<<it.first.second<<"\t"<<(int)it.second\
+		<<"\t depth:"<<child->depth<<endl;
+#endif
     }
     return ;
 }		/* -----  end of function Master::expand_all_children  ----- */
@@ -224,7 +237,8 @@ Master::update_frontier ( )
     //note that we only expand frontier at each new round, thus using GameStates is okay
     for (auto it: GameTree->children)
     {
-		GameTree->children.push_back(it);
+		Frontier.push(it);
+		it->depth=0;
     }
     return ;
 }		/* -----  end of function Master::update_frontier  ----- */
@@ -246,29 +260,37 @@ Master::update_frontier ( )
     void
 Master::IDSearch ( )
 {
+#if LOGGING
+    f <<"doing interative deepening search" <<endl;
+	__i__=1;
+#endif
     unsigned n=1;
     do
     {
         //pruning parameters
-        alpha=-100;
-        beta=100;
+        alpha=-1000;
+        beta=1000;
+		curval=0;
         //at each iteration we search in order of priority
         //for that we copy the priority queue once
-        auto temp_queue=Frontier;
-        do
+		auto temp_queue=from_frontier();
+		for(auto root:temp_queue)
         {
-            NewStates=GameStates;
-            auto root=temp_queue.top();
+			if (time_up()) return;
+ //           NewStates=GameStates;
             do_IDS(root,n);
-            root->TotalValue=curval;
-            root->children.clear();
-            //this makes memory linear
-            temp_queue.pop();
-            // go to the next node
+			for (auto it:root->children)
+				if(root->TotalValue>it->TotalValue)
+					root->TotalValue=it->TotalValue;
+#if LOGGING
+    f <<"traversing through a node at depth "<<n<<" total iteration is (slightly less than) "<<__i__<<endl;
+#endif
+			root->children.clear();
         }
-        while (!temp_queue.empty());
-        
         n++;
+#if LOGGING
+    f <<"finishing one round at "<<n<<endl;
+#endif
     }
     while (!time_up());
     return ;
@@ -276,7 +298,18 @@ Master::IDSearch ( )
     void
 Master::do_IDS ( KTreeNode_ root , const unsigned& depth)
 {
-    if (alpha>beta) return;
+
+#if LOGGING
+	__i__++;
+    f <<"IDS: Now at "<<root->depth<<endl;
+#endif
+    if (alpha>=beta) 
+	{
+#if LOGGING
+    f <<"pruned "<<alpha<<" "<<beta<<endl;
+#endif
+		return;
+	}
     //first, what was the last move (temp) played?
     //if depth is divisible by 2, then it is MY_PIECE 
     //else OPPONENT_PIECE
@@ -284,24 +317,76 @@ Master::do_IDS ( KTreeNode_ root , const unsigned& depth)
         mark_move(NewStates,mv(root->coord,MY_PIECE));
     else
         mark_move(NewStates,mv(root->coord,OPPONENT_PIECE));
-    if (root->depth<=depth)
+    if (root->depth<depth)
     {
         expand_all_children(root);
         for (auto it:root->children)
-            do_IDS(it, depth+1);
-        //root->TotalValue=curval;
+            do_IDS(it, depth);
         //annotate current values;
     }
     else
     {
-        alpha=-100;
-        beta=100;
         int val=depth*2;//addheuristic();
-        if (val>curval) curval=val;
+		if (depth%2)
+		{
+			if (val>root->TotalValue) root->TotalValue=val;
+#if LOGGING
+    f <<"Assigned a max "<<root->TotalValue<<endl;
+#endif
+		}
+		else
+		{
+			if (val<root->TotalValue) root->TotalValue=val;
+#if LOGGING
+    f <<"Assigned a min "<<root->TotalValue<<endl;
+#endif
+		}
+		// assign min max to root at depth n only
     }
-    mark_move(NewStates,mv(root->coord,NO_PIECE));
-    //unplay this move 
+	for (auto it:root->children)
+	{
+		if (depth%2)
+		{
+			if (it->TotalValue>root->TotalValue) 
+				root->TotalValue=it->TotalValue;
+			if (alpha>root->TotalValue)
+				alpha=root->TotalValue;
+		}
+		else
+		{
+			if (it->TotalValue<root->TotalValue) 
+				root->TotalValue=it->TotalValue;
+			if (beta<root->TotalValue)
+				beta=root->TotalValue;
+		}
+		// assign min max to root at depth n only
+		
+	};
     root->children.clear();
     //this makes linear memory
+    mark_move(NewStates,mv(root->coord,NO_PIECE));
+    //unplay this move 
     return;
 }		/* -----  end of function Master::do_IDS  ----- */
+    void
+Master::test_init (  )
+{
+    //initialize a test situation
+    GameStates.resize(5);
+    for (int i=0; i<5; i++)
+    {
+        GameStates[i].resize(5);
+    }
+    COLS=5;
+    ROWS=5;
+    K=4;
+    gravity=false;
+    time_limit=4000;
+    mv lastmove=mv(_mv(1,1),OPPONENT_PIECE);
+    mark_move(GameStates,lastmove);
+    NewStates=GameStates;
+	GameTree->coord=_mv(1,1);
+	GameTree->depth=-1;
+	tick();
+    return ;
+}		/* -----  end of function test_init  ----- */

@@ -56,7 +56,7 @@ class cmpr_1
         cmpr_1(){};
         bool operator ()(const KTreeNode_ left, const KTreeNode_ right)
         {
-            return left->TotalValue < right->TotalValue;
+			return left->TotalValue < right->TotalValue;
         };
 };
 /*
@@ -82,7 +82,7 @@ class Master
 
         /* ====================  ACCESSORS     ======================================= */
 
-        mv getOneMove(states States,movetype mt=MY_PIECE)
+        mv getOneMove(const states& States,movetype mt=MY_PIECE)
         {
             //get one legal move without excluding any
 #if LOGGING
@@ -96,7 +96,7 @@ class Master
                 }
             return mv(_mv(-1,-1),NO_PIECE);
         };
-        mv getOneMove(states States,KTreeNode_ node,movetype mt=MY_PIECE)
+        mv getOneMove(const states& States,KTreeNode_ node,movetype mt=MY_PIECE)
         {
             //get one legal move except if it is already in the node's children
 #if LOGGING
@@ -116,7 +116,7 @@ class Master
             return mv(_mv(-1,-1),NO_PIECE);
         };
 
-        std::vector<mv> getAllMoves(states States,movetype mt=MY_PIECE)
+        std::vector<mv> getAllMoves(const states& States,movetype mt=MY_PIECE)
         {
 #if LOGGING
             f<<"Now determining all moves"<<std::endl;
@@ -130,7 +130,7 @@ class Master
                 }
             return out;
         };
-        std::vector<mv> getAllMoves(states States,KTreeNode_ node,movetype mt=MY_PIECE)
+        std::vector<mv> getAllMoves(const states& States,KTreeNode_ node,movetype mt=MY_PIECE)
         {
 			//this is the version that checks the children, use only when necessary
 #if LOGGING
@@ -142,9 +142,11 @@ class Master
                 {
                     if (States[i][j]==NO_PIECE) 
                         //we check if the move is made in the children already
-                        for (auto it:node->children)
-                            if ((it)->coord.first==i && (it)->coord.second==j) goto THEN;
-                        out.push_back( mv(_mv(i,j),mt) );
+                    {
+						for (auto it:node->children)
+						if ((it)->coord.first==i && (it)->coord.second==j) goto THEN;
+						out.push_back( mv(_mv(i,j),mt) );
+					}
                     THEN:
                         continue;
                 }
@@ -171,7 +173,7 @@ class Master
             }
             else return false;
         };
-        bool mark_move(states S, mv move)
+        bool mark_move(states& S, mv move)
         {
             auto c=move.first.first;
             auto r=move.first.first;
@@ -186,10 +188,22 @@ class Master
         void do_IDS(KTreeNode_, const unsigned&);
         KTreeNode_ expand_one_child(KTreeNode_ parent);
         void expand_all_children(KTreeNode_ parent);
+        void test_init();
+		std::vector<KTreeNode_> from_frontier()
+		{
+			auto temp_q=Frontier;
+			std::vector<KTreeNode_> out;
+			out.reserve(ROWS*COLS);
+			while(!temp_q.empty())
+			{
+				out.push_back(temp_q.top());
+				temp_q.pop();
+			}
+			return out;
+		};
         
         /* ====================  OPERATORS     ======================================= */
         /* ====================  VIRTUALS     ======================================= */
-		virtual void abpruning(){}; // alpha-beta pruning
 		virtual void addheuristic(){}; //some heuristic
         
         virtual void main_routine()
@@ -231,6 +245,7 @@ class Master
         
 #if LOGGING
         std::ofstream f;
+		unsigned __i__;
 #endif
         
 
