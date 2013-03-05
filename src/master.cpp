@@ -141,6 +141,7 @@ Master::listen(const bool INIT=0)
             lastmove=mv(_mv(lastMoveCol,lastMoveRow),OPPONENT_PIECE);
             mark_move(GameStates,lastmove);
             NewStates=GameStates;
+			expand_all_children(GameTree);
        }
         return 1;
     }
@@ -230,17 +231,28 @@ Master::expand_all_children ( KTreeNode_ parent )
  *  Output:       none
  * =====================================================================================
  */
-    void
+	std::vector<KTreeNode_>
 Master::update_frontier ( )
 {
-	expand_all_children(GameTree);
+	std::vector<KTreeNode_> out;
+	out.reserve(ROWS*COLS);
+	std::priority_queue<KTreeNode_,std::vector<KTreeNode_>, cmpr_1> temp;
+	Frontier=temp;
     //note that we only expand frontier at each new round, thus using GameStates is okay
     for (auto it: GameTree->children)
     {
 		Frontier.push(it);
-		it->depth=0;
+		//First, we preserve the Frontier from results of last round
     }
-    return ;
+	temp=Frontier;
+	do
+	{
+		out.push_back(temp.top());
+		temp.pop();
+		//then we get these nodes in this order to search
+	} while (!temp.empty());
+
+    return out;
 }		/* -----  end of function Master::update_frontier  ----- */
 
 /* 
@@ -273,14 +285,15 @@ Master::IDSearch ( )
 		curval=0;
         //at each iteration we search in order of priority
         //for that we copy the priority queue once
-		auto temp_queue=from_frontier();
+		auto temp_queue=update_frontier();
+		reset_frontier();
 		for(auto root:temp_queue)
         {
 			if (time_up()) return;
  //           NewStates=GameStates;
             do_IDS(root,n);
 			for (auto it:root->children)
-				if(root->TotalValue>it->TotalValue)
+				if(root->TotalValue<it->TotalValue)
 					root->TotalValue=it->TotalValue;
 #if LOGGING
     f <<"traversing through a node at depth "<<n<<" total iteration is (slightly less than) "<<__i__<<endl;
@@ -326,7 +339,7 @@ Master::do_IDS ( KTreeNode_ root , const unsigned& depth)
     }
     else
     {
-        int val=depth*2;//addheuristic();
+        int val=addheuristic();
 		if (depth%2)
 		{
 			if (val>root->TotalValue) root->TotalValue=val;
@@ -382,11 +395,12 @@ Master::test_init (  )
     K=4;
     gravity=false;
     time_limit=4000;
-    mv lastmove=mv(_mv(1,1),OPPONENT_PIECE);
+    mv lastmove=mv(_mv(1,0),OPPONENT_PIECE);
     mark_move(GameStates,lastmove);
     NewStates=GameStates;
-	GameTree->coord=_mv(1,1);
+	GameTree->coord=_mv(1,0);
 	GameTree->depth=-1;
+	expand_all_children(GameTree);
 	tick();
     return ;
 }		/* -----  end of function test_init  ----- */

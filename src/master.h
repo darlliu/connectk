@@ -85,6 +85,7 @@ class Master
         mv getOneMove(const states& States,movetype mt=MY_PIECE)
         {
             //get one legal move without excluding any
+			//because we search from bottom up gravity doesn't matter
 #if LOGGING
             f<<"Now determining move"<<std::endl;
 #endif
@@ -110,8 +111,10 @@ class Master
                         for (auto it: node->children)
                             if (it->coord.first==i && it->coord.second==j) goto THEN;
                         return mv(_mv(i,j),mt);
-                    THEN:
+						THEN:
+						{
                         continue;
+						}
                 }
             return mv(_mv(-1,-1),NO_PIECE);
         };
@@ -123,11 +126,20 @@ class Master
 #endif
             std::vector<mv> out;
             for (int i=0; i<COLS; i++)
+			{
                 for (int j=0; j<ROWS; j++)
                 {
                     if (States[i][j]==NO_PIECE) 
+					{
                         out.push_back( mv(_mv(i,j),mt) );
+						if (gravity) goto SKIP;
+					}
                 }
+				SKIP:
+				{
+				continue;
+				}
+			}
             return out;
         };
         std::vector<mv> getAllMoves(const states& States,KTreeNode_ node,movetype mt=MY_PIECE)
@@ -138,6 +150,7 @@ class Master
 #endif
             std::vector<mv> out;
             for (int i=0; i<COLS; i++)
+			{
                 for (int j=0; j<ROWS; j++)
                 {
                     if (States[i][j]==NO_PIECE) 
@@ -146,12 +159,26 @@ class Master
 						for (auto it:node->children)
 						if ((it)->coord.first==i && (it)->coord.second==j) goto THEN;
 						out.push_back( mv(_mv(i,j),mt) );
+						if (gravity) goto SKIP;
 					}
-                    THEN:
-                        continue;
+					THEN:
+					{
+#if LOGGING
+					f<<"Escaped at depth"<<(int)node->depth<<std::endl;
+#endif
+					continue;
+					}
                 }
+				SKIP:
+				{
+				continue;
+				}
+			}
             return out;
         };
+
+		KTreeNode_ Get_Move(){return Frontier.top();};
+
         /* ====================  MUTATORS      ======================================= */
         bool listen(const bool);
         bool tell_move(const mv&);
@@ -173,38 +200,47 @@ class Master
             }
             else return false;
         };
-        bool mark_move(states& S, mv move)
+        void mark_move(states& S, mv move)
         {
-            auto c=move.first.first;
-            auto r=move.first.first;
-            if (S[c][r]!=NO_PIECE)
+            /*if (S[c][r]!=NO_PIECE)
                 return false;
-            else
-                S[c][r]=move.second;
-			return true;
+            else*/
+			S[move.first.first][move.first.second]=move.second;
+			return;
         };
-        void update_frontier();
+		void reset_frontier()
+		{
+		    for (auto it: GameTree->children)
+			{
+				it->depth=0;
+				it->TotalValue=0;
+				//reset the Frontier candidates for next round.
+			}
+		};
+        std::vector<KTreeNode_> update_frontier();
         void IDSearch();
         void do_IDS(KTreeNode_, const unsigned&);
         KTreeNode_ expand_one_child(KTreeNode_ parent);
         void expand_all_children(KTreeNode_ parent);
         void test_init();
-		std::vector<KTreeNode_> from_frontier()
+		/*void reform_frontier()
 		{
-			auto temp_q=Frontier;
-			std::vector<KTreeNode_> out;
-			out.reserve(ROWS*COLS);
-			while(!temp_q.empty())
+			//simply touch and reform the frontier after search done
+			std::priority_queue<KTreeNode_,std::vector<KTreeNode_>, cmpr_1> temp;
+			auto out=Frontier.top();
+			do
 			{
-				out.push_back(temp_q.top());
-				temp_q.pop();
-			}
-			return out;
-		};
+				out=Frontier.top();
+				temp.push(out);
+				Frontier.pop();
+			} while (!Frontier.empty());
+			Frontier=temp;
+			return;
+		};*/
         
         /* ====================  OPERATORS     ======================================= */
         /* ====================  VIRTUALS     ======================================= */
-		virtual void addheuristic(){}; //some heuristic
+		virtual unsigned addheuristic(){return 0;}; //some heuristic
         
         virtual void main_routine()
         {
