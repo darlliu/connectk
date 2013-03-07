@@ -18,6 +18,10 @@ typedef enum
     NO_PIECE,
     MY_PIECE
 } movetype;
+typedef enum
+{
+	TIME_UP
+} ERRORS;
 typedef std::chrono::duration<int,std::milli> ms;
 typedef std::chrono::high_resolution_clock hclock;
 typedef std::pair<int, int> _mv;

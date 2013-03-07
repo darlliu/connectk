@@ -291,7 +291,18 @@ Master::IDSearch ( )
         {
 			if (time_up()) return;
  //           NewStates=GameStates;
-            do_IDS(root,n);
+			try
+			{
+				do_IDS(root,n);
+			}
+			catch (ERRORS a)
+			{
+				for (auto it:root->children)
+					if(root->TotalValue<it->TotalValue)
+						root->TotalValue=it->TotalValue;
+				root->children.clear();
+				return ;
+			}
 			for (auto it:root->children)
 				if(root->TotalValue<it->TotalValue)
 					root->TotalValue=it->TotalValue;
@@ -379,6 +390,7 @@ Master::do_IDS ( KTreeNode_ root , const unsigned& depth)
     //this makes linear memory
     mark_move(NewStates,mv(root->coord,NO_PIECE));
     //unplay this move 
+	if(time_up()) throw TIME_UP;
     return;
 }		/* -----  end of function Master::do_IDS  ----- */
     void
