@@ -1,22 +1,22 @@
 ﻿/*
- * =====================================================================================
- *
- *       Filename:  utils.h
- *
- *    Description:  Utility typedefs and objects to make life easier
- *
- *        Created:  2/20/2013 8:30:14 PM
- *
- * =====================================================================================
- */
+* =====================================================================================
+*
+*       Filename:  utils.h
+*
+*    Description:  Utility typedefs and objects to make life easier
+*
+*        Created:  2/20/2013 8:30:14 PM
+*
+* =====================================================================================
+*/
 #ifndef UTILS_H
 #define UTILS_H
 #include"headers.h"
 typedef enum
 {
-    OPPONENT_PIECE=-1,
-    NO_PIECE,
-    MY_PIECE
+	OPPONENT_PIECE=-1,
+	NO_PIECE,
+	MY_PIECE
 } movetype;
 typedef enum
 {
