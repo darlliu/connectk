@@ -165,7 +165,7 @@ SKIP:
 THEN:
 				{
 #if LOGGING
-					f<<"Escaped at depth"<<(int)node->depth<<std::endl;
+					f<<"Escaped at depth"<<(int)node->depth<<"i , j "<<i<<j<<std::endl;
 #endif
 					continue;
 				}
