@@ -159,7 +159,9 @@ SKIP:
 						if ((it)->coord.first==i && (it)->coord.second==j) goto THEN;
 					out.push_back( mv(_mv(i,j),mt) );
 					if (gravity) goto SKIP;
+                    continue;
 				}
+                else continue;
 THEN:
 				{
 #if LOGGING
