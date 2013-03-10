@@ -165,7 +165,7 @@ SKIP:
 THEN:
 				{
 #if LOGGING
-					f<<"Escaped at depth"<<(int)node->depth<<"i , j "<<i<<j<<std::endl;
+					f<<"Escaped at depth"<<(int)node->depth<<" i , j "<<i<<j<<std::endl;
 #endif
 					continue;
 				}
@@ -206,6 +206,7 @@ SKIP:
 		/*if (S[c][r]!=NO_PIECE)
 		return false;
 		else*/
+        if (move.first.first<0 || move.first.second<0) return;
 		S[move.first.first][move.first.second]=move.second;
 		return;
 	};

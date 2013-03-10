@@ -131,8 +131,8 @@ bool
 #if LOGGING
 			f<<"parsing done";
 #endif
-			tick();
 			{
+                tick();
 				ROWS=colCount;
 				COLS=rowCount;
 				K=k;
@@ -142,7 +142,9 @@ bool
 				mark_move(GameStates,lastmove);
 				NewStates=GameStates;
                 GameTree->depth=-1;
+                GameTree->TotalValue=0;
                 GameTree->coord=lastmove.first;
+                GameTree->children.clear();
 				expand_all_children(GameTree);
 			}
 			return 1;
