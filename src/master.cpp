@@ -29,10 +29,10 @@ bool
 	string begin =  "makeMoveWithState:";
 	string end = "end";
 	string input;
-#if LOGGING
-	f<<"LISTENING, INIT IS "<<INIT<<endl;
-#endif
 	cin >> input;
+#if LOGGING
+	f<<"LISTENING, INIT IS "<<INIT<<"\t command is "<<input <<endl;
+#endif
 	while (true)
 		if (input == end){
 #if LOGGING
@@ -141,6 +141,8 @@ bool
 				lastmove=mv(_mv(lastMoveRow,lastMoveCol),OPPONENT_PIECE);
 				mark_move(GameStates,lastmove);
 				NewStates=GameStates;
+                GameTree->depth=-1;
+                GameTree->coord=lastmove.first;
 				expand_all_children(GameTree);
 			}
 			return 1;
