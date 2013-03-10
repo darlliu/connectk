@@ -88,8 +88,8 @@ public:
 #if LOGGING
 		f<<"Now determining move"<<std::endl;
 #endif
-		for (int i=0; i<COLS; i++)
-			for (int j=0; j<ROWS; j++)
+		for (int i=0; i<ROWS; i++)
+			for (int j=0; j<COLS; j++)
 			{
 				if (States[i][j]==NO_PIECE)
 					return mv(_mv(i,j),mt);
@@ -102,8 +102,8 @@ public:
 #if LOGGING
 		f<<"Now determining move"<<std::endl;
 #endif
-		for (int i=0; i<COLS; i++)
-			for (int j=0; j<ROWS; j++)
+		for (int i=0; i<ROWS; i++)
+			for (int j=0; j<COLS; j++)
 			{
 				if (States[i][j]==NO_PIECE)
 					//we check if the move is made in the children already
@@ -124,9 +124,9 @@ THEN:
 		f<<"Now determining all moves"<<std::endl;
 #endif
 		std::vector<mv> out;
-		for (int i=0; i<COLS; i++)
+		for (int i=0; i<ROWS; i++)
 		{
-			for (int j=0; j<ROWS; j++)
+			for (int j=0; j<COLS; j++)
 			{
 				if (States[i][j]==NO_PIECE)
 				{
@@ -148,9 +148,9 @@ SKIP:
 		f<<"Now determining all moves"<<std::endl;
 #endif
 		std::vector<mv> out;
-		for (int i=0; i<COLS; i++)
+		for (int i=0; i<ROWS; i++)
 		{
-			for (int j=0; j<ROWS; j++)
+			for (int j=0; j<COLS; j++)
 			{
 				if (States[i][j]==NO_PIECE)
 					//we check if the move is made in the children already
@@ -263,7 +263,7 @@ protected:
 	/* ====================  DATA MEMBERS  ======================================= */
 	hclock::time_point t0, t1;
 	int time_limit;
-	int COLS,ROWS;
+	int ROWS,COLS;
 	int alpha,beta,curval;
 	int K;
 	mv lastmove;

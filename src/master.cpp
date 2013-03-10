@@ -41,10 +41,10 @@ bool
 			return 1;
 		}
 		else if (input == begin){
-			//first I want the gravity, then number of cols, then number of rows, then the col of the last move, then the row of the last move then the values for all the spaces.
+			//first I want the gravity, then number of ROWS, then number of COLS, then the col of the last move, then the row of the last move then the values for all the spaces.
 			// 0 for no gravity, 1 for gravity
-			//then rows
-			//then cols
+			//then COLS
+			//then ROWS
 			//then lastMove col
 			//then lastMove row.
 			//then deadline.
@@ -133,12 +133,12 @@ bool
 #endif
 			tick();
 			{
-				COLS=colCount;
-				ROWS=rowCount;
+				ROWS=colCount;
+				COLS=rowCount;
 				K=k;
 				gravity=_gravity;
 				time_limit=deadline;
-				lastmove=mv(_mv(lastMoveCol,lastMoveRow),OPPONENT_PIECE);
+				lastmove=mv(_mv(lastMoveRow,lastMoveCol),OPPONENT_PIECE);
 				mark_move(GameStates,lastmove);
 				NewStates=GameStates;
 				expand_all_children(GameTree);
@@ -234,7 +234,7 @@ std::vector<KTreeNode_>
 	Master::update_frontier ( )
 {
 	std::vector<KTreeNode_> out;
-	out.reserve(ROWS*COLS);
+	out.reserve(COLS*ROWS);
 	std::priority_queue<KTreeNode_,std::vector<KTreeNode_>, cmpr_1> temp;
 	Frontier=temp;
 	//note that we only expand frontier at each new round, thus using GameStates is okay
@@ -399,8 +399,8 @@ void
 	{
 		GameStates[i].resize(5);
 	}
-	COLS=5;
 	ROWS=5;
+	COLS=5;
 	K=4;
 	gravity=false;
 	time_limit=4000;
