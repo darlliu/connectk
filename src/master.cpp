@@ -143,7 +143,7 @@ bool
 				lastmove=mv(_mv(lastMoveRow,lastMoveCol),OPPONENT_PIECE);
 				mark_move(GameStates,lastmove);
 				NewStates=GameStates;
-                GameTree->depth=-1;
+                GameTree->depth=0;
                 GameTree->TotalValue=0;
                 GameTree->coord=lastmove.first;
                 GameTree->children.clear();
@@ -335,15 +335,15 @@ void
 #endif
 	if (alpha>=beta)
 	{
-#if LOGGING
+#if LOGGING2
 		f <<"pruned "<<alpha<<" "<<beta<<endl;
 #endif
-		return;
+//		return;
 	}
 	//first, what was the last move (temp) played?
 	//if depth is divisible by 2, then it is MY_PIECE
 	//else OPPONENT_PIECE
-	if (root->depth%2==0)
+	if (root->depth%2)
 		mark_move(NewStates,mv(root->coord,MY_PIECE));
 	else
 		mark_move(NewStates,mv(root->coord,OPPONENT_PIECE));
@@ -357,21 +357,9 @@ void
 	else
 	{
 		auto val=addheuristic();
-		if (depth%2)
-		{
-			if (val>root->TotalValue) root->TotalValue=val;
-#if LOGGING
-			f <<"Assigned a max "<<root->TotalValue<<endl;
-#endif
-		}
-		else
-		{
-			if (val<root->TotalValue) root->TotalValue=val;
-#if LOGGING
-			f <<"Assigned a min "<<root->TotalValue<<endl;
-#endif
-		}
-		// assign min max to root at depth n only
+		root->TotalValue=val;
+        mark_move(NewStates,mv(root->coord,NO_PIECE));
+        return;
 	}
 	for (auto it:root->children)
 	{
@@ -385,7 +373,7 @@ void
 			if (it->TotalValue<root->TotalValue)
 				root->TotalValue=it->TotalValue;
 		}
-		// assign min max to root at depth n only
+		// assign min max of children to root 
 	};
 	root->depth%2?alpha=root->TotalValue:beta=root->TotalValue;
 	root->children.clear();
@@ -418,7 +406,7 @@ void
 	mark_move(GameStates,lastmove);
 	NewStates=GameStates;
 	GameTree->coord=_mv(1,0);
-	GameTree->depth=-1;
+	GameTree->depth=0;
 	expand_all_children(GameTree);
 	tick();
 	return ;

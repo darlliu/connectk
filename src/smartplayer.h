@@ -81,6 +81,14 @@ class Smartplayer : public Master
 			auto val=*temp.rbegin();
             return float(val);
 		};
+        virtual float count_connections()
+        {
+			auto my=myconnections();
+			auto their=theirconnections();
+            if (my>=K) return 4.0;
+            else if (their>=K) return 0;
+            else return(my);
+        };
         /* ====================  INHERITED     ======================================= */
         //only need to alter these two.
         //in fact main_routine() can be left alone unless under special circumstances
@@ -107,9 +115,8 @@ class Smartplayer : public Master
         };
         virtual float addheuristic() override
         {
-			auto my=myconnections();
-			auto their=theirconnections();
-			return 1*my-1*their;
+            auto val=count_connections();
+            return val;
         };
 
 
