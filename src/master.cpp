@@ -85,7 +85,7 @@ bool
 			int deadline = -1;
 			cin >>g;
 			deadline = g;
-            if (deadline>500) deadline-=500;
+            if (deadline>100) deadline-=100;
             //we leave some room for timeup
 #if LOGGING
 			f<<g<<endl;
@@ -291,6 +291,7 @@ void
 		//we do not reset
 		for(auto root:temp_queue)
 		{
+            root->TotalValue=0;
 			//pruning parameters
 			alpha=-1000;
 			beta=1000;
