@@ -4,6 +4,7 @@
 core.*
 a.out
 logs.txt
+*.txt
 *.pydevproject
 .project
 .metadata
