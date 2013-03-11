@@ -28,5 +28,6 @@ typedef std::pair<int, int> _mv;
 typedef std::pair<_mv, movetype> mv;
 typedef std::vector<std::vector<movetype>> states;
 #define LOGGING 1
+#define LOGGING2 1
 
 #endif

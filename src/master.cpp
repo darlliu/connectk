@@ -375,26 +375,26 @@ void
 	}
 	for (auto it:root->children)
 	{
-		if (depth%2)
+		if (root->depth%2)
 		{
 			if (it->TotalValue>root->TotalValue)
 				root->TotalValue=it->TotalValue;
-			if (alpha>root->TotalValue)
-				alpha=root->TotalValue;
 		}
 		else
 		{
 			if (it->TotalValue<root->TotalValue)
 				root->TotalValue=it->TotalValue;
-			if (beta<root->TotalValue)
-				beta=root->TotalValue;
 		}
 		// assign min max to root at depth n only
 	};
+	root->depth%2?alpha=root->TotalValue:beta=root->TotalValue;
 	root->children.clear();
 	//this makes linear memory
 	mark_move(NewStates,mv(root->coord,NO_PIECE));
 	//unplay this move
+#if LOGGING2
+	f <<"alpha beta is now "<<alpha<<" "<<beta<<endl;
+#endif
 	if(time_up()) throw TIME_UP;
 	return;
 }		/* -----  end of function Master::do_IDS  ----- */
