@@ -87,7 +87,7 @@ class Smartplayer : public Master
 			auto their=theirconnections();
             if (my>=K) return 4.0;
             else if (their>=K) return 0;
-            else return(my);
+            else return(my+0.5);
         };
         /* ====================  INHERITED     ======================================= */
         //only need to alter these two.

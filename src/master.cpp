@@ -291,7 +291,6 @@ void
 		//we do not reset
 		for(auto root:temp_queue)
 		{
-            root->TotalValue=0;
 			//pruning parameters
 			alpha=-1000;
 			beta=1000;
@@ -338,7 +337,7 @@ void
 #if LOGGING2
 		f <<"pruned "<<alpha<<" "<<beta<<endl;
 #endif
-//		return;
+		return;
 	}
 	//first, what was the last move (temp) played?
 	//if depth is divisible by 2, then it is MY_PIECE
