@@ -85,6 +85,8 @@ bool
 			int deadline = -1;
 			cin >>g;
 			deadline = g;
+            if (deadline>500) deadline-=500;
+            //we leave some room for timeup
 #if LOGGING
 			f<<g<<endl;
 #endif
@@ -282,16 +284,17 @@ void
 	unsigned n=1;
 	do
 	{
-		//pruning parameters
-		alpha=-1000;
-		beta=1000;
-		curval=0;
 		//at each iteration we search in order of priority
 		//for that we copy the priority queue once
 		auto temp_queue=update_frontier();
-		reset_frontier();
+		//reset_frontier();
+		//we do not reset
 		for(auto root:temp_queue)
 		{
+			//pruning parameters
+			alpha=-1000;
+			beta=1000;
+			curval=0;
 			if (time_up()) return;
 			//           NewStates=GameStates;
 			try
@@ -352,7 +355,7 @@ void
 	}
 	else
 	{
-		int val=addheuristic();
+		auto val=addheuristic();
 		if (depth%2)
 		{
 			if (val>root->TotalValue) root->TotalValue=val;
@@ -408,7 +411,9 @@ void
 	K=4;
 	gravity=false;
 	time_limit=4000;
-	mv lastmove=mv(_mv(1,0),OPPONENT_PIECE);
+	mv lastmove=mv(_mv(0,0),MY_PIECE);
+	mark_move(GameStates,lastmove);
+	lastmove=mv(_mv(1,0),OPPONENT_PIECE);
 	mark_move(GameStates,lastmove);
 	NewStates=GameStates;
 	GameTree->coord=_mv(1,0);

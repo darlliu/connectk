@@ -40,7 +40,7 @@ public:
 	//vector provides constant time access and fixed size;
 	//however, list provides constant time resizing, reordering and pruning cost
 	//in this case the traverse counts per operation is limited by depth which is small
-	int TotalValue;
+	float TotalValue;
 	//the total value of features given by some heuristic traversal operation
 	unsigned depth;
 	//depth of this node. If this turns out unnecessary then we can get rid of it.
@@ -178,7 +178,7 @@ SKIP:
 		return out;
 	};
 
-	KTreeNode_ Get_Move(){return Frontier.top();};
+	mv Get_Move(){return mv(Frontier.top()->coord,MY_PIECE);};
 
 	/* ====================  MUTATORS      ======================================= */
 	bool listen(const bool);
@@ -242,7 +242,7 @@ SKIP:
 
 	/* ====================  OPERATORS     ======================================= */
 	/* ====================  VIRTUALS     ======================================= */
-	virtual unsigned addheuristic(){return 0;}; //some heuristic
+	virtual float addheuristic(){return 0.0;}; //some heuristic
 
 	virtual void main_routine()
 	{
