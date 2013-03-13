@@ -37,7 +37,7 @@ class Smartplayer : public Master
             int i,j;
             auto traverse=[this,&i,&j,&TYPE](int inc_row, int inc_col)
             {
-                int out=0;
+                int out=0,f=0;
                 auto k=i,l=j;
                 do 
                 {
@@ -46,10 +46,12 @@ class Smartplayer : public Master
                     if(k<0 || k>=ROWS || l<0 || l>=COLS) break;
                     if(this->NewStates[k][l]==TYPE)
                         out++;
+					else if (this->NewStates[k][l]==NO_PIECE)
+						f++;
                     else break;
                 } 
                 while (true);
-                return out;
+                return std::pair<int,int>(out,f);
             };
             for ( i = 0; i < ROWS; i++) 
                 for ( j = 0; j < COLS; j++) 
@@ -57,7 +59,10 @@ class Smartplayer : public Master
                     if (NewStates[i][j]==TYPE)
                     {
                         // try to find a new connections
-                        int OUTS[4]={traverse(1,0),traverse(0,1), traverse(1,1),traverse(1,-1)};
+						int OUTS[4]={traverse(1,0).first,traverse(0,1).first, traverse(1,1).first,traverse(1,-1).first};
+						int FREE[4]={traverse(1,0).second,traverse(0,1).second, traverse(1,1).second,traverse(1,-1).second};
+						for (int it=0; it<4;i++)
+							if (FREE[i]+OUTS[i]<K) OUTS[i]=0;
                         std::sort(OUTS, OUTS+4);
                         _connected.push_back(OUTS[3]);
                     }
