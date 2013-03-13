@@ -4,7 +4,7 @@
 int main()
 {
 	Smartplayer m1;
-    m1.main_routine();
+    //m1.main_routine();
     
 	m1.test_init();
 	m1.IDSearch();

@@ -62,7 +62,7 @@ class Smartplayer : public Master
 						int OUTS[4]={traverse(1,0).first,traverse(0,1).first, traverse(1,1).first,traverse(1,-1).first};
 						int FREE[4]={traverse(1,0).second,traverse(0,1).second, traverse(1,1).second,traverse(1,-1).second};
 						for (int it=0; it<4;i++)
-							if (FREE[i]+OUTS[i]<K) OUTS[i]=0;
+							if (FREE[it]+OUTS[it]<K) OUTS[it]=0;
                         std::sort(OUTS, OUTS+4);
                         _connected.push_back(OUTS[3]);
                     }
