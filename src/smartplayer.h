@@ -29,9 +29,9 @@ class Smartplayer : public Master
         Smartplayer (){};                             /* constructor */
 
         /* ====================  UTILITY     ======================================= */
-        std::vector<int> connections (movetype TYPE=MY_PIECE)
+        std::vector<float> connections (movetype TYPE=MY_PIECE)
         {
-            std::vector<int> _connected;
+            std::vector<float> _connected;
             _connected.reserve(ROWS*COLS);
             //for fast push
             int i,j;
@@ -61,8 +61,9 @@ class Smartplayer : public Master
                         // try to find a new connections
 						int OUTS[4]={traverse(1,0).first,traverse(0,1).first, traverse(1,1).first,traverse(1,-1).first};
 						int FREE[4]={traverse(1,0).second,traverse(0,1).second, traverse(1,1).second,traverse(1,-1).second};
-						for (int it=0; it<4;i++)
+						for (int it=0; it<4;it++)
 							if (FREE[it]+OUTS[it]<K) OUTS[it]=0;
+                            else OUTS[it]+=0.5*FREE[it];
                         std::sort(OUTS, OUTS+4);
                         _connected.push_back(OUTS[3]);
                     }
