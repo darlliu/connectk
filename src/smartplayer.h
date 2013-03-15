@@ -28,58 +28,78 @@ class Smartplayer : public Master
         Smartplayer (){};                             /* constructor */
 
         /* ====================  UTILITY     ======================================= */
-    float winning_seqs (movetype TYPE=MY_PIECE)
-    {
-        std::vector<float> _connected;
-        _connected.reserve(ROWS*COLS);
-        //for fast push
-        int i,j;
-        auto traverse=[this,&i,&j,&TYPE](int inc_row, int inc_col) -> float 
+        float winning_seqs (movetype TYPE=MY_PIECE)
         {
-            float out=1;
-            auto k=i,l=j;
-            bool flag=false;
-            do 
+            std::vector<float> _connected;
+            _connected.reserve(ROWS*COLS);
+            //for fast push
+            int i,j;
+            auto traverse=[this,&i,&j,&TYPE](int inc_row, int inc_col) -> float 
             {
-                k+=inc_row;
-                l+=inc_col;
-                if(k<0 || k>=ROWS || l<0 || l>=COLS) flag=true;
-                else if(this->NewStates[k][l]==TYPE\
-                        ||this->NewStates[k][l]==NO_PIECE)
-                    out++;
-                else flag=true;
-            } 
-            while (!flag);
-            k=i,l=j;
-            flag=false;
-            do 
-            {
-                k-=inc_row;
-                l-=inc_col;
-                if(k<0 || k>=ROWS || l<0 || l>=COLS) flag=true;
-                else if(this->NewStates[k][l]==TYPE\
-                        ||this->NewStates[k][l]==NO_PIECE)
-                    out++;
-                else flag=true;
-            } 
-            while (!flag);
-            if (out-K-1>0) return out-K-1;
-            else return 0;
-        };
-        for ( i = 0; i < ROWS; i++) 
-            for ( j = 0; j < COLS; j++) 
-            {
-                if (NewStates[i][j]==TYPE)
+                float out=1,out2=0;
+                auto k=i,l=j;
+                int cnts=0;
+                bool flag=false;
+                do 
                 {
-                    // try to find a new connections
-                    float OUTS=traverse(-1,1)+traverse(1,0)+traverse(0,1)+traverse(1,1);
-                    _connected.push_back(OUTS);
+                    k+=inc_row;
+                    l+=inc_col;
+                    if (cnts>=3) break;
+                    if(k<0 || k>=ROWS || l<0 || l>=COLS) flag=true;
+                    else if (this->NewStates[k][l]==TYPE)
+                    {
+                        out++;
+                        cnts=0;
+                    }
+                    else if (this->NewStates[k][l]==NO_PIECE)
+                    {
+                        out++;
+                        cnts++;
+                    }
+                    else flag=true;
+                } 
+                while (!flag);
+                k=i,l=j;
+                flag=false;
+                cnts=0;
+                do 
+                {
+                    k-=inc_row;
+                    l-=inc_col;
+                    if(k<0 || k>=ROWS || l<0 || l>=COLS) flag=true;
+                    else if (this->NewStates[k][l]==TYPE)
+                    {
+                        out++;
+                        cnts=0;
+                    }
+                    else if (this->NewStates[k][l]==NO_PIECE)
+                    {
+                        out++;
+                        cnts++;
+                    }
+                    else flag=true;
+                } 
+                while (!flag);
+                if( out+out2-K-1>0 ) return out+out2-K-1;
+                else return 0;
+            };
+            for ( i = 0; i < ROWS; i++) 
+                for ( j = 0; j < COLS; j++) 
+                {
+                    if (NewStates[i][j]==TYPE)
+                    {
+                        // try to find a new connections
+                        float OUTS=traverse(-1,1)+traverse(1,0)+traverse(0,1)+traverse(1,1);
+                        _connected.push_back(OUTS);
+                    }
                 }
-            }
-        if (_connected.size()==0) return 0; 
-        std::sort(_connected.begin(), _connected.end());
-        return (*_connected.rbegin());
-    };
+            float val=0;
+            for (auto it: _connected)
+            {
+                val+=it;
+            };
+            return (val);
+        };
 
         float spaces (movetype TYPE=MY_PIECE)
         {
@@ -199,7 +219,7 @@ class Smartplayer : public Master
             f<<"val is  "<<val1<<std::endl;
             print_board();
 #endif
-            return val1+val2+val3-val4;
+            return val1+val2+0.5*val3-0.5*val4;
         };
 
 

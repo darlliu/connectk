@@ -420,7 +420,7 @@ void
 	NewStates=GameStates;
 	GameTree->coord=_mv(1,0);
 	GameTree->depth=0;
-	expand_all_children(GameTree);
+	expand_all_children(GameTree,false);
 	tick();
 	return ;
 }		/* -----  end of function test_init  ----- */
@@ -499,7 +499,7 @@ float Master::connections (movetype TYPE)
 		if (f1*f2 > 0)
 		{
 			if (out>=K-1)
-				return 100;
+				return 50;
 			else return out+1;
 		}
 		else if (out+f1+f2<K)
