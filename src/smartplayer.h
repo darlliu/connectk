@@ -37,21 +37,37 @@ class Smartplayer : public Master
             int i,j;
             auto traverse=[this,&i,&j,&TYPE](int inc_row, int inc_col)
             {
-                int out=0,f=0;
-                auto k=i,l=j;
+                int out=0,f1=0,f2=0;
+                auto k=i,k2=i, l2=j, l=j;
+                bool flag1, flag2;
                 do 
                 {
+                    flag1=flag2=false;
                     k+=inc_row;
                     l+=inc_col;
-                    if(k<0 || k>=ROWS || l<0 || l>=COLS) break;
+                    k2-=inc_row;
+                    l2-=inc_col;
+                    if(k<0 || k>=ROWS || l<0 || l>=COLS) flag1=true;
+                    if(k2<0 || k2>=ROWS || l2<0 || l2>=COLS) flag2=true;
+                    if(flag1 && flag2) break;
                     if(this->NewStates[k][l]==TYPE)
                         out++;
 					else if (this->NewStates[k][l]==NO_PIECE)
-						f++;
-                    else break;
+						f1++;
+                    else flag1=true;
+                    if(this->NewStates[k2][l2]==TYPE)
+                        out++;
+					else if (this->NewStates[k2][l2]==NO_PIECE)
+						f2++;
+                    else flag2=true;
                 } 
-                while (true);
-                return std::pair<float,float>((float)out,(float)f);
+                while (!flag1 && !flag2);
+                if (f1 * f2>0)
+                    if (out>K-2)
+                        return K;
+                else if (out+f1+f2<K)
+                    return 0;
+                else return out+(f1+f2)/K;
             };
             for ( i = 0; i < ROWS; i++) 
                 for ( j = 0; j < COLS; j++) 
@@ -59,11 +75,7 @@ class Smartplayer : public Master
                     if (NewStates[i][j]==TYPE)
                     {
                         // try to find a new connections
-                        float OUTS[4]={traverse(-1,1).first,traverse(1,0).first,traverse(0,1).first,traverse(1,1).first}
-                            , FREE[4]={traverse(-1,1).second,traverse(1,0).second,traverse(0,1).second,traverse(1,1).second};
-						for (int it=0; it<4;it++)
-							if (FREE[it]+OUTS[it]<K) OUTS[it]=0;
-                            else OUTS[it]-=OUTS[it]/(1+FREE[it]);
+                        float OUTS[4]={traverse(-1,1),traverse(1,0),traverse(0,1),traverse(1,1)};
                         std::sort(OUTS, OUTS+4);
                         _connected.push_back(OUTS[3]);
                     }
@@ -73,6 +85,7 @@ class Smartplayer : public Master
 
         float spaces (movetype TYPE=MY_PIECE)
         {
+            //return a naive estimate of the "spaces" occupied by one player
             float _spaces=1;
             //for fast push
             int i,j;
@@ -132,11 +145,16 @@ class Smartplayer : public Master
 		};
         virtual float count_connections()
         {
+            //a naive heuristics that aims to achieve three goals:
+            //1, decisively pick moves that result in immediate win
+            //2, decisively avoid moves that result in immediate loss
+            //3, weakly prefer moves that increase our max connection
 			auto my=myconnections();
 			auto their=theirconnections();
             if (my>=K) return 10;
             else if (their>=K) return 0;
-            else return my-their;
+            else if (my>their) return 3;
+            else return 1;
         };
         virtual float myspaces()
         {
