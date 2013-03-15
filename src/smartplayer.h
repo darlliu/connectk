@@ -44,7 +44,7 @@ class Smartplayer : public Master
                 {
                     k+=inc_row;
                     l+=inc_col;
-                    if (cnts>=3) break;
+                    if (cnts>=K-1) break;
                     if(k<0 || k>=ROWS || l<0 || l>=COLS) flag=true;
                     else if (this->NewStates[k][l]==TYPE)
                     {
@@ -66,6 +66,7 @@ class Smartplayer : public Master
                 {
                     k-=inc_row;
                     l-=inc_col;
+                    if (cnts>=K-1) break;
                     if(k<0 || k>=ROWS || l<0 || l>=COLS) flag=true;
                     else if (this->NewStates[k][l]==TYPE)
                     {

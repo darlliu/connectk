@@ -248,26 +248,42 @@ SKIP:
 	{
 		auto v1=connections(MY_PIECE);
 		auto v2=connections(OPPONENT_PIECE);
-		if (v1==100) 
+		if (v1==200) 
 		{
 #if LOGGING4
 		f<<"Encountered a game winning move"<<std::endl;
         print_board();
 #endif
-			parent->TotalValue=100;
+			parent->TotalValue=200;
             parent->children.clear();
 			return true;
 		}
-		if (v2==100) 
+		if (v2==200) 
 		{
 #if LOGGING4
 		f<<"Encountered a game losing move"<<std::endl;
         print_board();
 #endif
-			parent->TotalValue=-100;
+			parent->TotalValue=-200;
             parent->children.clear();
 			return true;
 		}
+        if (v1>=50 && parent->depth%2==0)
+        {
+            //if the opponent moved and we have a large advantage
+            //then we win
+            parent->TotalValue=v1;
+            parent->children.clear();
+            return true;
+        }
+        else if (v2>=50 && parent->depth%2)
+        {
+            //if we moved and the opponent is one piece away from winning
+            //then we lost
+            parent->TotalValue=-v2;
+            parent->children.clear();
+            return true;
+        }
 		else return false;
 	};
 	/* ====================  VIRTUALS     ======================================= */
@@ -300,7 +316,6 @@ protected:
 	int K;
 	mv lastmove;
 	bool gravity;
-    bool whose_turn;
 	std::priority_queue<KTreeNode_,std::vector<KTreeNode_>,cmpr_1> Frontier;
 	// our priority tree frontier which is maintained via vector for constant time access
 	// note that the frontier is quite small in most cases (it's the immediate candidates

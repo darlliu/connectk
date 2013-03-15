@@ -61,24 +61,24 @@ bool
 			f<<"grav:"<<g<<endl;
 #endif
 			cin >> g;
-			int colCount = g;
+			int rowCount = g;
 #if LOGGING
 			f<<"col: "<<g<<endl;
 #endif
 			cin >>g;
-			int rowCount = g;
+			int colCount = g;
 #if LOGGING
 			f<<"row: "<<g<<endl;
 #endif
 			cin >>g;
-			int lastMoveCol = g;
-#if LOGGING
-			f<<g<<endl;
-#endif
-			cin >> g;
 			int lastMoveRow = g;
 #if LOGGING
-			f<<g<<endl;
+			f<<"r:"<<g<<endl;
+#endif
+			cin >> g;
+			int lastMoveCol = g;
+#if LOGGING
+			f<<"c:"<<g<<endl;
 #endif
 
 			//add the deadline here:
@@ -109,10 +109,10 @@ bool
 			*/
 			if (INIT)
 			{
-				GameStates.resize(colCount);
-				for (int i=0; i<colCount; i++)
+				GameStates.resize(rowCount);
+				for (int i=0; i<rowCount; i++)
 				{
-					GameStates[i].resize(rowCount);
+					GameStates[i].resize(colCount);
 				}
 			}
 			int temp;
@@ -130,13 +130,10 @@ bool
 				f<<endl;
 #endif
 			}
-#if LOGGING
-			f<<"parsing done";
-#endif
 			{
                 tick();
-				ROWS=colCount;
-				COLS=rowCount;
+				ROWS=rowCount;
+				COLS=colCount;
 				K=k;
 				gravity=_gravity;
 				time_limit=deadline;
@@ -149,6 +146,10 @@ bool
                 GameTree->children.clear();
 				expand_all_children(GameTree,false);
 			}
+#if LOGGING
+			f<<"parsing done"<<endl;
+            print_board();
+#endif
 			return 1;
 		}
 		else {
@@ -380,8 +381,6 @@ void
 	}
 	else
 	{
-        if (root->depth%2) whose_turn=true;
-        else whose_turn=false;
 		auto val=addheuristic();
 		root->TotalValue=val;
         mark_move(NewStates,mv(root->coord,NO_PIECE));
@@ -496,17 +495,18 @@ float Master::connections (movetype TYPE)
 			else flag=true;
 		} 
 		while (!flag);
-		if (f1*f2 > 0)
+        if (out>=K) return 200;
+        else if (f1*f2 > 0)
 		{
 			if (out>=K-1)
-				return 50;
+				return 100;
 			else return out+1;
 		}
 		else if (out+f1+f2<K)
 			return 0;
 		else
 		{
-			if (out>=K) return 100;
+			if (out>=K-1) return 50;
 			else return out;
 		}
 		
