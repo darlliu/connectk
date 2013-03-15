@@ -51,7 +51,7 @@ class Smartplayer : public Master
                     else break;
                 } 
                 while (true);
-                return std::pair<int,int>(out,f);
+                return std::pair<float,float>((float)out,(float)f);
             };
             for ( i = 0; i < ROWS; i++) 
                 for ( j = 0; j < COLS; j++) 
@@ -59,16 +59,53 @@ class Smartplayer : public Master
                     if (NewStates[i][j]==TYPE)
                     {
                         // try to find a new connections
-						int OUTS[4]={traverse(1,0).first,traverse(0,1).first, traverse(1,1).first,traverse(1,-1).first};
-						int FREE[4]={traverse(1,0).second,traverse(0,1).second, traverse(1,1).second,traverse(1,-1).second};
+                        float OUTS[4]={traverse(-1,1).first,traverse(1,0).first,traverse(0,1).first,traverse(1,1).first}
+                            , FREE[4]={traverse(-1,1).second,traverse(1,0).second,traverse(0,1).second,traverse(1,1).second};
 						for (int it=0; it<4;it++)
 							if (FREE[it]+OUTS[it]<K) OUTS[it]=0;
-                            else OUTS[it]+=0.5*FREE[it];
+                            else OUTS[it]-=OUTS[it]/(1+FREE[it]);
                         std::sort(OUTS, OUTS+4);
                         _connected.push_back(OUTS[3]);
                     }
                 }
             return _connected;
+        };
+
+        float spaces (movetype TYPE=MY_PIECE)
+        {
+            float _spaces=1;
+            //for fast push
+            int i,j;
+            auto traverse = [this, &i,&j, &TYPE] ()
+            {
+                float spaces=0;
+                //for (unsigned idx=0; idx<depth; idx++)
+                for (int ii=-1; ii<2;ii++)
+                for (int jj=-1; jj<2; jj++)
+                {
+                    int k=i,l=j;
+                    if (ii==0 && jj==0) continue;
+                    k+=ii;
+                    l+=jj;
+                    if(k<0 || k>=ROWS || l<0 || l>=COLS) continue;
+                    if (this->NewStates[k][l]==MY_PIECE\
+                            ||this->NewStates[k][l]==NO_PIECE)
+                        spaces+=1.0;
+                }
+                return spaces;
+            };
+            float pieces=0;
+            for ( i = 0; i < ROWS; i++) 
+                for ( j = 0; j < COLS; j++) 
+                {
+                    if (NewStates[i][j]==TYPE)
+                    {
+                        pieces+=1;
+                        _spaces+=traverse();
+                    }
+                }
+            _spaces/=pieces;
+            return _spaces/9;
         };
         
 
@@ -78,6 +115,9 @@ class Smartplayer : public Master
             auto temp=connections();
             std::sort(temp.begin(), temp.end());
 			auto val=*temp.rbegin();
+#if LOGGING3
+            f<<"My connections is "<<val<<std::endl;
+#endif
             return float(val);
 		};
 		virtual float theirconnections()
@@ -85,16 +125,27 @@ class Smartplayer : public Master
             auto temp=connections(OPPONENT_PIECE);
             std::sort(temp.begin(), temp.end());
 			auto val=*temp.rbegin();
+#if LOGGING3
+            f<<"Their connections is "<<val<<std::endl;
+#endif
             return float(val);
 		};
         virtual float count_connections()
         {
 			auto my=myconnections();
 			auto their=theirconnections();
-            if (my>=K) return 4.0;
+            if (my>=K) return 10;
             else if (their>=K) return 0;
-            else return(my+0.5);
+            else return my-their;
         };
+        virtual float myspaces()
+        {
+            auto val=spaces();
+#if LOGGING3
+            f<<"my spaces is "<<val<<std::endl;
+#endif
+            return val;
+        }
         /* ====================  INHERITED     ======================================= */
         //only need to alter these two.
         //in fact main_routine() can be left alone unless under special circumstances
@@ -121,8 +172,11 @@ class Smartplayer : public Master
         };
         virtual float addheuristic() override
         {
-            auto val=count_connections();
-            return val;
+            auto val1=count_connections();
+            if (val1==0) return 0;
+            else if (val1==10) return 10;
+            auto val2=myspaces();
+            return val1+val2;
         };
 
 

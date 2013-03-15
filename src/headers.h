@@ -16,7 +16,7 @@
 #include<vector>
 #include<memory>
 #include"utils.h"
-#if LOGGING2+LOGGING
+#if 1
 #include<fstream>
 #endif
 #endif

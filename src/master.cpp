@@ -38,7 +38,7 @@ bool
 #if LOGGING
 			f<<"DONE "<< input <<endl;
 #endif
-			return 1;
+			return 0;
 		}
 		else if (input == begin){
 			//first I want the gravity, then number of ROWS, then number of COLS, then the col of the last move, then the row of the last move then the values for all the spaces.
