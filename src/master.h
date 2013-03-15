@@ -271,6 +271,7 @@ protected:
 	int K;
 	mv lastmove;
 	bool gravity;
+    bool whose_turn;
 	std::priority_queue<KTreeNode_,std::vector<KTreeNode_>,cmpr_1> Frontier;
 	// our priority tree frontier which is maintained via vector for constant time access
 	// note that the frontier is quite small in most cases (it's the immediate candidates

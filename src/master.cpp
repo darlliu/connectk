@@ -355,6 +355,8 @@ void
 	}
 	else
 	{
+        if (root->depth%2) whose_turn=true;
+        else whose_turn=false;
 		auto val=addheuristic();
 		root->TotalValue=val;
         mark_move(NewStates,mv(root->coord,NO_PIECE));
