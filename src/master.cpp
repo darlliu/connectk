@@ -308,7 +308,8 @@ void
 					if(root->TotalValue<it->TotalValue)
 						root->TotalValue=it->TotalValue;
 				root->children.clear();
-				return ;
+				if(a==TIME_UP) return ;
+				else continue;
 			}
 			for (auto it:root->children)
 				if(root->TotalValue<it->TotalValue)
