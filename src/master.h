@@ -240,6 +240,8 @@ SKIP:
 	return;
 	};*/
 
+    void print_board();
+
 	/* ====================  OPERATORS     ======================================= */
 	/* ====================  VIRTUALS     ======================================= */
 	virtual float addheuristic(){return 0.0;}; //some heuristic

@@ -313,6 +313,10 @@ void
 #if LOGGING
 			f <<"traversing through a node at depth "<<n<<" total iteration is (slightly less than) "<<__i__<<endl;
 #endif
+#if LOGGING4
+			f <<"board for move "<<root->coord.first<<" "<<root->coord.second<<" has value "<<root->TotalValue <<endl;
+            print_board();
+#endif
 			root->children.clear();
 		}
 		n++;
@@ -335,16 +339,16 @@ void
 	//else OPPONENT_PIECE
 	if (root->depth%2)
     {
-        alpha=-1000;//clear alpha
 		mark_move(NewStates,mv(root->coord,MY_PIECE));
     }
 	else
     {
-        beta=1000;//clear beta
 		mark_move(NewStates,mv(root->coord,OPPONENT_PIECE));
     }
 	if (root->depth<depth)
 	{
+        if(root->depth%2) alpha=-1000;
+        else beta=1000;
 		expand_all_children(root);
 		for (auto it:root->children)
         {
@@ -366,7 +370,7 @@ void
 #if LOGGING2
                 f <<"pruned "<<alpha<<" "<<beta<<endl;
 #endif
-                //break;
+                break;
             }
         }
 	}
@@ -416,3 +420,13 @@ void
 	tick();
 	return ;
 }		/* -----  end of function test_init  ----- */
+void Master::print_board()
+{
+    for (int col =0; col<ROWS; col++){
+        for (int row =0; row<COLS; row++){
+            f<<(int)NewStates[col][row];
+            f<<"\t";
+        }
+        f<<endl;
+    }
+};

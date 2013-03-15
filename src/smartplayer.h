@@ -37,50 +37,71 @@ class Smartplayer : public Master
             int i,j;
             auto traverse=[this,&i,&j,&TYPE](int inc_row, int inc_col) -> float 
             {
-                float out=0,f1=0,f2=0;
-                auto k=i,k2=i, l2=j, l=j;
-                bool flag1, flag2;
+                float out=1,f1=0,f2=0;
+                auto k=i,l=j;
+                bool flag=false;
                 do 
                 {
-                    flag1=flag2=false;
                     k+=inc_row;
                     l+=inc_col;
-                    k2-=inc_row;
-                    l2-=inc_col;
-                    if(k<0 || k>=ROWS || l<0 || l>=COLS) flag1=true;
+                    if(k<0 || k>=ROWS || l<0 || l>=COLS) flag=true;
                     else if(this->NewStates[k][l]==TYPE)
                         out++;
-					else if (this->NewStates[k][l]==NO_PIECE)
-						f1++;
-                    else flag1=true;
-                    if(k2<0 || k2>=ROWS || l2<0 || l2>=COLS) flag2=true;
-                    else if(this->NewStates[k2][l2]==TYPE)
-                        out++;
-					else if (this->NewStates[k2][l2]==NO_PIECE)
-						f2++;
-                    else flag2=true;
+                    else flag=true;
                 } 
-                while (!flag1 || !flag2);
-                if (f1 * f2>0)
+                while (!flag);
+                k=i,l=j;
+                flag=false;
+                do 
+                {
+                    k+=inc_row;
+                    l+=inc_col;
+                    if(k<0 || k>=ROWS || l<0 || l>=COLS) flag=true;
+                    else if(this->NewStates[k][l]==NO_PIECE)
+                        f1++;
+                    else if (this->NewStates[k][l]==TYPE)
+                        ;
+                    else flag=true;
+                } 
+                while (!flag);
+                k=i,l=j;
+                flag=false;
+                do 
+                {
+                    k-=inc_row;
+                    l-=inc_col;
+                    if(k<0 || k>=ROWS || l<0 || l>=COLS) flag=true;
+                    else if(this->NewStates[k][l]==TYPE)
+                        out++;
+                    else flag=true;
+                } 
+                while (!flag);
+                k=i,l=j;
+                flag=false;
+                do 
+                {
+                    k-=inc_row;
+                    l-=inc_col;
+                    if(k<0 || k>=ROWS || l<0 || l>=COLS) flag=true;
+                    else if(this->NewStates[k][l]==NO_PIECE)
+                        f2++;
+                    else if (this->NewStates[k][l]==TYPE)
+                        ;
+                    else flag=true;
+                } 
+                while (!flag);
+                if (f1*f2 > 0)
                 {
                     if (out>=K-1)
                         return 100;
 					else return out;
                 }
-                else if (f1 || f2)
+                else if (f1+f2>K)
                 {
-                    if (out >= K)
-                        return (float)100;
-                    else if (out+f1+f2<K)
-                        return 0.0;
+                    if (out>=K) return 100;
                     else return out;
                 }
-                else 
-                {
-                    if (out>=K) return (float) 100;
-                    else return 0;
-                }
-				return 0;
+                else return 0;
             };
             for ( i = 0; i < ROWS; i++) 
                 for ( j = 0; j < COLS; j++) 
@@ -172,7 +193,7 @@ class Smartplayer : public Master
              */
             if (their==100) return -10;
             else if (my==100) return 10;
-            else return 0;
+            else return my;
         };
         virtual float myspaces()
         {
@@ -210,6 +231,10 @@ class Smartplayer : public Master
         {
             auto val1=count_connections();
             //auto val2=myspaces();
+#if LOGGING3
+            f<<"val is  "<<val1<<std::endl;
+            print_board();
+#endif
             return val1;
         };
 
