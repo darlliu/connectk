@@ -243,6 +243,24 @@ SKIP:
     void print_board();
 
 	/* ====================  OPERATORS     ======================================= */
+	float connections (movetype TYPE=MY_PIECE);
+	bool game_over(KTreeNode_ parent)
+	{
+		auto v1=connections(MY_PIECE);
+		auto v2=connections(OPPONENT_PIECE);
+		if (v1==100 && v2==100) throw (TOO_MANY);
+		if (v1==100) 
+		{
+			parent->TotalValue=100;
+			return true;
+		}
+		else if (v2==100) 
+		{
+			parent->TotalValue=-100;
+			return true;
+		}
+		else return false;
+	};
 	/* ====================  VIRTUALS     ======================================= */
 	virtual float addheuristic(){return 0.0;}; //some heuristic
 

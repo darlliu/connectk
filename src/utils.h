@@ -22,7 +22,8 @@ typedef enum
 {
 	TIME_UP,
     WIN,
-    LOSS
+    LOSS,
+	TOO_MANY
 } ERRORS;
 typedef std::chrono::duration<int,std::milli> ms;
 typedef std::chrono::high_resolution_clock hclock;

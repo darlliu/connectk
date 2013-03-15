@@ -189,6 +189,7 @@ bool
 *                signature passing the current node;
 * =====================================================================================
 */
+/*
 KTreeNode_
 	Master::expand_one_child(KTreeNode_ parent)
 {
@@ -206,12 +207,14 @@ KTreeNode_
 #endif
 	return child;
 };
+*/
 void
 	Master::expand_all_children ( KTreeNode_ parent )
 {
 #if LOGGING
 	f <<"expanding all children" <<endl;
 #endif
+	if (game_over(parent)) return;
 	auto temp=getAllMoves(NewStates, parent);
 	for (auto it: temp)
 	{
@@ -429,4 +432,96 @@ void Master::print_board()
         }
         f<<endl;
     }
+};
+
+float Master::connections (movetype TYPE)
+{
+	std::vector<float> _connected;
+	_connected.reserve(ROWS*COLS);
+	//for fast push
+	int i,j;
+	auto traverse=[this,&i,&j,&TYPE](int inc_row, int inc_col) -> float 
+	{
+		float out=1,f1=0,f2=0;
+		auto k=i,l=j;
+		bool flag=false;
+		do 
+		{
+			k+=inc_row;
+			l+=inc_col;
+			if(k<0 || k>=ROWS || l<0 || l>=COLS) flag=true;
+			else if(this->NewStates[k][l]==TYPE)
+				out++;
+			else flag=true;
+		} 
+		while (!flag);
+		k=i,l=j;
+		flag=false;
+		do 
+		{
+			k+=inc_row;
+			l+=inc_col;
+			if(k<0 || k>=ROWS || l<0 || l>=COLS) flag=true;
+			else if(this->NewStates[k][l]==NO_PIECE)
+				f1++;
+			else if (this->NewStates[k][l]==TYPE)
+				;
+			else flag=true;
+		} 
+		while (!flag);
+		k=i,l=j;
+		flag=false;
+		do 
+		{
+			k-=inc_row;
+			l-=inc_col;
+			if(k<0 || k>=ROWS || l<0 || l>=COLS) flag=true;
+			else if(this->NewStates[k][l]==TYPE)
+				out++;
+			else flag=true;
+		} 
+		while (!flag);
+		k=i,l=j;
+		flag=false;
+		do 
+		{
+			k-=inc_row;
+			l-=inc_col;
+			if(k<0 || k>=ROWS || l<0 || l>=COLS) flag=true;
+			else if(this->NewStates[k][l]==NO_PIECE)
+				f2++;
+			else if (this->NewStates[k][l]==TYPE)
+				;
+			else flag=true;
+		} 
+		while (!flag);
+		if (f1*f2 > 0)
+		{
+			if (out>=K-1)
+				return 100;
+			else return out+1;
+		}
+		else if (out+f1+f2<K)
+			return 0;
+		else
+		{
+			if (out>=K) return 100;
+			else return out;
+		}
+		
+	};
+	for ( i = 0; i < ROWS; i++) 
+		for ( j = 0; j < COLS; j++) 
+		{
+			if (NewStates[i][j]==TYPE)
+			{
+				// try to find a new connections
+				float OUTS[4]={traverse(-1,1),traverse(1,0),traverse(0,1),traverse(1,1)};
+				std::sort(OUTS, OUTS+4);
+				_connected.push_back(OUTS[3]);
+			}
+		}
+	if (_connected.size()==0) return 0; 
+	std::sort(_connected.begin(), _connected.end());
+	return (*_connected.rbegin());
 };
