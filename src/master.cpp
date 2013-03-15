@@ -405,7 +405,9 @@ void
 	time_limit=4000;
 	mv lastmove=mv(_mv(0,0),MY_PIECE);
 	mark_move(GameStates,lastmove);
-	lastmove=mv(_mv(1,0),OPPONENT_PIECE);
+	lastmove=mv(_mv(2,2),OPPONENT_PIECE);
+	mark_move(GameStates,lastmove);
+	lastmove=mv(_mv(2,3),OPPONENT_PIECE);
 	mark_move(GameStates,lastmove);
 	NewStates=GameStates;
 	GameTree->coord=_mv(1,0);
