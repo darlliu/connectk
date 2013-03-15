@@ -15,6 +15,7 @@
 #include<utility>
 #include<vector>
 #include<memory>
+#include <algorithm>
 #include"utils.h"
 #if 1
 #include<fstream>

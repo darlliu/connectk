@@ -248,15 +248,24 @@ SKIP:
 	{
 		auto v1=connections(MY_PIECE);
 		auto v2=connections(OPPONENT_PIECE);
-		if (v1==100 && v2==100) throw (TOO_MANY);
 		if (v1==100) 
 		{
+#if LOGGING4
+		f<<"Encountered a game winning move"<<std::endl;
+        print_board();
+#endif
 			parent->TotalValue=100;
+            parent->children.clear();
 			return true;
 		}
-		else if (v2==100) 
+		if (v2==100) 
 		{
+#if LOGGING4
+		f<<"Encountered a game losing move"<<std::endl;
+        print_board();
+#endif
 			parent->TotalValue=-100;
+            parent->children.clear();
 			return true;
 		}
 		else return false;

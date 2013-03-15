@@ -32,7 +32,7 @@ typedef std::pair<_mv, movetype> mv;
 typedef std::vector<std::vector<movetype>> states;
 #define LOGGING 0
 #define LOGGING2 0
-#define LOGGING3 1
-#define LOGGING4 0
+#define LOGGING3 0
+#define LOGGING4 1
 
 #endif

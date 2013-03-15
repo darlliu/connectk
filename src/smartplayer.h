@@ -15,7 +15,6 @@
 #ifndef SMARTPLAYER_H
 #define SMARTPLAYER_H
 #include "master.h"
-#include <algorithm>
 /*
  * =====================================================================================
  *        Class:  Smartplayer
