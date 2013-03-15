@@ -223,7 +223,7 @@ SKIP:
 	void IDSearch();
 	void do_IDS(KTreeNode_, const unsigned&);
 	KTreeNode_ expand_one_child(KTreeNode_ parent);
-	void expand_all_children(KTreeNode_ parent);
+	void expand_all_children(KTreeNode_ parent,bool check=true);
 	void test_init();
 	/*void reform_frontier()
 	{

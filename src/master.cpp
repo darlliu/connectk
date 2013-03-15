@@ -147,7 +147,7 @@ bool
                 GameTree->TotalValue=0;
                 GameTree->coord=lastmove.first;
                 GameTree->children.clear();
-				expand_all_children(GameTree);
+				expand_all_children(GameTree,false);
 			}
 			return 1;
 		}
@@ -209,12 +209,12 @@ KTreeNode_
 };
 */
 void
-	Master::expand_all_children ( KTreeNode_ parent )
+	Master::expand_all_children ( KTreeNode_ parent, bool check )
 {
 #if LOGGING
 	f <<"expanding all children" <<endl;
 #endif
-	if (game_over(parent)) return;
+	if(check) if (game_over(parent)) return;
 	auto temp=getAllMoves(NewStates, parent);
 	for (auto it: temp)
 	{
