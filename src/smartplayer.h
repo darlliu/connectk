@@ -28,6 +28,58 @@ class Smartplayer : public Master
         Smartplayer (){};                             /* constructor */
 
         /* ====================  UTILITY     ======================================= */
+    float winning_seqs (movetype TYPE=MY_PIECE)
+    {
+        std::vector<float> _connected;
+        _connected.reserve(ROWS*COLS);
+        //for fast push
+        int i,j;
+        auto traverse=[this,&i,&j,&TYPE](int inc_row, int inc_col) -> float 
+        {
+            float out=1;
+            auto k=i,l=j;
+            bool flag=false;
+            do 
+            {
+                k+=inc_row;
+                l+=inc_col;
+                if(k<0 || k>=ROWS || l<0 || l>=COLS) flag=true;
+                else if(this->NewStates[k][l]==TYPE\
+                        ||this->NewStates[k][l]==NO_PIECE)
+                    out++;
+                else flag=true;
+            } 
+            while (!flag);
+            k=i,l=j;
+            flag=false;
+            do 
+            {
+                k-=inc_row;
+                l-=inc_col;
+                if(k<0 || k>=ROWS || l<0 || l>=COLS) flag=true;
+                else if(this->NewStates[k][l]==TYPE\
+                        ||this->NewStates[k][l]==NO_PIECE)
+                    out++;
+                else flag=true;
+            } 
+            while (!flag);
+            if (out-K-1>0) return out-K-1;
+            else return 0;
+        };
+        for ( i = 0; i < ROWS; i++) 
+            for ( j = 0; j < COLS; j++) 
+            {
+                if (NewStates[i][j]==TYPE)
+                {
+                    // try to find a new connections
+                    float OUTS=traverse(-1,1)+traverse(1,0)+traverse(0,1)+traverse(1,1);
+                    _connected.push_back(OUTS);
+                }
+            }
+        if (_connected.size()==0) return 0; 
+        std::sort(_connected.begin(), _connected.end());
+        return (*_connected.rbegin());
+    };
 
         float spaces (movetype TYPE=MY_PIECE)
         {
@@ -93,15 +145,9 @@ class Smartplayer : public Master
             //3, weakly prefer moves that increase our max connection
 			auto my=myconnections();
 			auto their=theirconnections();
-            /*
-             *if (my>=K && their >=K )
-             *{
-             *    //if (whose_turn)
-             *        //if (my>their)return 10;
-             *    return 0;
-             *}
-             */
-            return my-their;
+            if (my==100) return 100;
+            else if (their==100) return -100;
+            return (my-their)/K;
         };
         virtual float myspaces()
         {
@@ -110,7 +156,15 @@ class Smartplayer : public Master
             f<<"my spaces is "<<val<<std::endl;
 #endif
             return val;
-        }
+        };
+        virtual float my_seqs()
+        {
+            return winning_seqs();
+        };
+        virtual float their_seqs()
+        {
+            return winning_seqs(OPPONENT_PIECE);
+        };
         /* ====================  INHERITED     ======================================= */
         //only need to alter these two.
         //in fact main_routine() can be left alone unless under special circumstances
@@ -139,11 +193,13 @@ class Smartplayer : public Master
         {
             auto val1=count_connections();
             auto val2=myspaces();
+            auto val3=my_seqs();
+            auto val4=their_seqs();
 #if LOGGING3
             f<<"val is  "<<val1<<std::endl;
             print_board();
 #endif
-            return val1+val2;
+            return val1+val2+val3-val4;
         };
 
 
