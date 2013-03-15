@@ -60,11 +60,12 @@ class Smartplayer : public Master
 						f2++;
                     else flag2=true;
                 } 
-                while (!flag1 or !flag2);
+                while (!flag1 || !flag2);
                 if (f1 * f2>0)
                 {
                     if (out>=K-2)
                         return (float)K;
+					else return out;
                 }
                 else if (f1 || f2)
                 {
@@ -79,6 +80,7 @@ class Smartplayer : public Master
                     if (out>=K) return (float) K;
                     else return 0;
                 }
+				return 0;
             };
             for ( i = 0; i < ROWS; i++) 
                 for ( j = 0; j < COLS; j++) 
@@ -94,6 +96,7 @@ class Smartplayer : public Master
                         _connected.push_back(OUTS[3]);
                     }
                 }
+			if (_connected.size()==0) return 0; 
             std::sort(_connected.begin(), _connected.end());
             return (*_connected.rbegin());
         };
@@ -144,7 +147,7 @@ class Smartplayer : public Master
 #if LOGGING3
             f<<"My connections is "<<val<<std::endl;
 #endif
-            return float(val);
+            return val;
 		};
 		virtual float theirconnections()
 		{
@@ -152,7 +155,7 @@ class Smartplayer : public Master
 #if LOGGING3
             f<<"Their connections is "<<temp<<std::endl;
 #endif
-            return float(temp);
+            return temp;
 		};
         virtual float count_connections()
         {
