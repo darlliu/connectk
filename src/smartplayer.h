@@ -63,21 +63,21 @@ class Smartplayer : public Master
                 while (!flag1 || !flag2);
                 if (f1 * f2>0)
                 {
-                    if (out>=K-2)
-                        return (float)K;
+                    if (out>=K-1)
+                        return 100;
 					else return out;
                 }
                 else if (f1 || f2)
                 {
-                    if (out >= K-1)
-                        return (float)K;
+                    if (out >= K)
+                        return (float)100;
                     else if (out+f1+f2<K)
                         return 0.0;
                     else return out;
                 }
                 else 
                 {
-                    if (out>=K) return (float) K;
+                    if (out>=K) return (float) 100;
                     else return 0;
                 }
 				return 0;
@@ -90,9 +90,6 @@ class Smartplayer : public Master
                         // try to find a new connections
                         float OUTS[4]={traverse(-1,1),traverse(1,0),traverse(0,1),traverse(1,1)};
                         std::sort(OUTS, OUTS+4);
-#if LOGGING3
-            f<<"One Value is "<<OUTS[3]<<std::endl;
-#endif
                         _connected.push_back(OUTS[3]);
                     }
                 }
@@ -165,15 +162,17 @@ class Smartplayer : public Master
             //3, weakly prefer moves that increase our max connection
 			auto my=myconnections();
 			auto their=theirconnections();
-            if (my>=K && their >=K )
-            {
-                if (whose_turn) return 10;
-                else return 0;
-            }
-            else if (my>=K) return 10;
-            else if (their>=K) return 0;
-            else if (my>their) return 3;
-            else return 1;
+            /*
+             *if (my>=K && their >=K )
+             *{
+             *    //if (whose_turn)
+             *        //if (my>their)return 10;
+             *    return 0;
+             *}
+             */
+            if (their==100) return -10;
+            else if (my==100) return 10;
+            else return 0;
         };
         virtual float myspaces()
         {
@@ -210,10 +209,8 @@ class Smartplayer : public Master
         virtual float addheuristic() override
         {
             auto val1=count_connections();
-            if (val1==0) return 0;
-            else if (val1==10) return 10;
-            auto val2=myspaces();
-            return val1+val2;
+            //auto val2=myspaces();
+            return val1;
         };
 
 

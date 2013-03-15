@@ -32,7 +32,7 @@ class KTreeNode
 public:
 	/* ====================  LIFECYCLE     ======================================= */
 	KTreeNode ():
-		TotalValue(0),depth(999)
+		TotalValue(0),depth(0)
 	{coord.first=0; coord.second=0;};
 	/* constructor */
 	// here is out overloaded operator for priority queue

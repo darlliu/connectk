@@ -27,8 +27,8 @@ typedef std::chrono::high_resolution_clock hclock;
 typedef std::pair<int, int> _mv;
 typedef std::pair<_mv, movetype> mv;
 typedef std::vector<std::vector<movetype>> states;
-#define LOGGING 0
+#define LOGGING 1
 #define LOGGING2 0
-#define LOGGING3 1
+#define LOGGING3 0
 
 #endif

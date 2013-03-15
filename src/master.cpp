@@ -292,8 +292,6 @@ void
 		for(auto root:temp_queue)
 		{
 			//pruning parameters
-			alpha=-1000;
-			beta=1000;
 			curval=0;
 			if (time_up()) return;
 			//           NewStates=GameStates;
@@ -332,26 +330,45 @@ void
 	__i__++;
 	f <<"IDS: Now at "<<root->depth<<endl;
 #endif
-	if (alpha>=beta)
-	{
-#if LOGGING2
-		f <<"pruned "<<alpha<<" "<<beta<<endl;
-#endif
-		return;
-	}
 	//first, what was the last move (temp) played?
 	//if depth is divisible by 2, then it is MY_PIECE
 	//else OPPONENT_PIECE
 	if (root->depth%2)
+    {
+        alpha=-1000;//clear alpha
 		mark_move(NewStates,mv(root->coord,MY_PIECE));
+    }
 	else
+    {
+        beta=1000;//clear beta
 		mark_move(NewStates,mv(root->coord,OPPONENT_PIECE));
+    }
 	if (root->depth<depth)
 	{
 		expand_all_children(root);
 		for (auto it:root->children)
+        {
 			do_IDS(it, depth);
-		//annotate current values;
+            if (root->depth%2)
+            {
+                if (it->TotalValue>root->TotalValue)
+                    root->TotalValue=it->TotalValue;
+                alpha=root->TotalValue;
+            }
+            else
+            {
+                if (it->TotalValue<root->TotalValue)
+                    root->TotalValue=it->TotalValue;
+                beta=root->TotalValue;
+            }
+            if (alpha>=beta)
+            {
+#if LOGGING2
+                f <<"pruned "<<alpha<<" "<<beta<<endl;
+#endif
+                //break;
+            }
+        }
 	}
 	else
 	{
@@ -362,21 +379,6 @@ void
         mark_move(NewStates,mv(root->coord,NO_PIECE));
         return;
 	}
-	for (auto it:root->children)
-	{
-		if (root->depth%2)
-		{
-			if (it->TotalValue>root->TotalValue)
-				root->TotalValue=it->TotalValue;
-		}
-		else
-		{
-			if (it->TotalValue<root->TotalValue)
-				root->TotalValue=it->TotalValue;
-		}
-		// assign min max of children to root 
-	};
-	root->depth%2?alpha=root->TotalValue:beta=root->TotalValue;
 	root->children.clear();
 	//this makes linear memory
 	mark_move(NewStates,mv(root->coord,NO_PIECE));
