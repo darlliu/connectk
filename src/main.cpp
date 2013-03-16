@@ -1,11 +1,15 @@
 #include "master.h"
+#include "smartplayer.h"
 
 int main()
 {
-	Master m1;
-	//m1.main_routine();
-	m1.test_init();
-	m1.update_frontier();
-	m1.IDSearch();
+	Smartplayer m1;
+    m1.main_routine();
+    
+	//m1.test_init();
+	//m1.IDSearch();
+	//m1.update_frontier();
+	//auto a=m1.Get_Move();
+     
 	return 1;
 };
