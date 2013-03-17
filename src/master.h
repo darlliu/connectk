@@ -252,73 +252,9 @@ SKIP:
 
     void print_board();
 
-	/* ====================  OPERATORS     ======================================= */
+	/* ====================  UTILITIES     ======================================= */
 	float connections (movetype TYPE=MY_PIECE);
-	bool game_over(KTreeNode_ parent)
-	{
-		auto v1=connections(MY_PIECE);
-		auto v2=connections(OPPONENT_PIECE);
-        if (v1>=200 && v2>=200)
-        {
-#if LOGGING4
-		f<<"A problem occured where both are winning"<<std::endl;
-        print_board();
-#endif
-            if (parent->depth%2)
-            {
-                parent->TotalValue=-2000;
-                return true;
-            }
-            else return false;
-        }
-		if (v1>=200) 
-		{
-#if LOGGING4
-		f<<"Encountered a game winning move"<<std::endl;
-        print_board();
-#endif
-			parent->TotalValue=2000;
-            parent->children.clear();
-			return true;
-		}
-		if (v2>=200) 
-		{
-#if LOGGING4
-		f<<"Encountered a game losing move"<<std::endl;
-        print_board();
-#endif
-			parent->TotalValue=-2000;
-            parent->children.clear();
-			return true;
-		}
-        if (parent->depth%2)
-        {
-            //if we moved:
-            //if opponent has K-1 in a row we lost
-            if (v2>=50)
-            {
-#if LOGGING4
-                f<<"Encountered a forced game losing move"<<std::endl;
-                print_board();
-#endif
-                //if we moved and the opponent is one piece away from winning
-                //then we lost
-                parent->TotalValue=-2000;
-                parent->children.clear();
-                return true;
-            }
-            else return false;
-        }
-        if (v1>=100 && parent->depth%2==0)
-        {
-#if LOGGING4
-		f<<"Encountered a forced game winning move"<<std::endl;
-        print_board();
-#endif
-            return false;
-        }
-        else return false;
-	};
+	bool game_over(KTreeNode_ );
 	/* ====================  VIRTUALS     ======================================= */
 	virtual float addheuristic(){return 0.0;}; //some heuristic
 

@@ -446,7 +446,7 @@ float Master::connections (movetype TYPE)
 	int i,j;
 	auto traverse=[this,&i,&j,&TYPE](int inc_row, int inc_col) -> float 
 	{
-		float out=1,f1=0,f2=0;
+		float out=1,f1=0,out1=0, f2=0, out2=0;
 		auto k=i,l=j;
 		bool flag=false;
 		do 
@@ -459,7 +459,8 @@ float Master::connections (movetype TYPE)
 			else flag=true;
 		} 
 		while (!flag);
-		k=i,l=j;
+        k-=inc_row;
+        l-=inc_col;
 		flag=false;
 		do 
 		{
@@ -468,11 +469,25 @@ float Master::connections (movetype TYPE)
 			if(k<0 || k>=ROWS || l<0 || l>=COLS) flag=true;
 			else if(this->NewStates[k][l]==NO_PIECE)
 				f1++;
-			else if (this->NewStates[k][l]==TYPE)
-				;
 			else flag=true;
 		} 
 		while (!flag);
+        if (f1==1)
+        {
+            k-=inc_row;
+            l-=inc_col;
+            bool flag=false;
+            do 
+            {
+                k+=inc_row;
+                l+=inc_col;
+                if(k<0 || k>=ROWS || l<0 || l>=COLS) flag=true;
+                else if(this->NewStates[k][l]==TYPE)
+                    out1++;
+                else flag=true;
+            } 
+            while (!flag);
+        }
 		k=i,l=j;
 		flag=false;
 		do 
@@ -485,7 +500,8 @@ float Master::connections (movetype TYPE)
 			else flag=true;
 		} 
 		while (!flag);
-		k=i,l=j;
+        k+=inc_row;
+        l+=inc_col;
 		flag=false;
 		do 
 		{
@@ -494,19 +510,43 @@ float Master::connections (movetype TYPE)
 			if(k<0 || k>=ROWS || l<0 || l>=COLS) flag=true;
 			else if(this->NewStates[k][l]==NO_PIECE)
 				f2++;
-			else if (this->NewStates[k][l]==TYPE)
-				;
 			else flag=true;
 		} 
 		while (!flag);
+        if (f2==1)
+        {
+            k+=inc_row;
+            l+=inc_col;
+            flag=false;
+            do 
+            {
+                k-=inc_row;
+                l-=inc_col;
+                if(k<0 || k>=ROWS || l<0 || l>=COLS) flag=true;
+                else if(this->NewStates[k][l]==TYPE)
+                    out2++;
+                else flag=true;
+            } 
+            while (!flag);
+        }
 
         if (out>=K) return 200;
+        else if (out1>=1)
+        {
+            if (out1+out>=K-1)
+                return 50;
+        }
+        else if (out2>=1)
+        {
+            if (out2+out>=K-1)
+                return 50;
+        }
         else if (f1*f2 > 0)
 		{
 			if (out>=K-1)
 				return 100;
 			if (out>=K-2)
-				return 25;
+				return 50;
 			else return out+1;
 		}
 		else if (out+f1+f2<K)
@@ -533,3 +573,71 @@ float Master::connections (movetype TYPE)
 	std::sort(_connected.begin(), _connected.end());
 	return (*_connected.rbegin());
 };
+
+
+
+bool Master::game_over(KTreeNode_ parent)
+	{
+		auto v1=connections(MY_PIECE);
+		auto v2=connections(OPPONENT_PIECE);
+        if (v1>=200 && v2>=200)
+        {
+#if LOGGING4
+		f<<"A problem occured where both are winning"<<std::endl;
+        print_board();
+#endif
+            if (parent->depth%2)
+            {
+                parent->TotalValue=-2000;
+                return true;
+            }
+            else return false;
+        }
+		if (v1>=200) 
+		{
+#if LOGGING4
+		f<<"Encountered a game winning move"<<std::endl;
+        print_board();
+#endif
+			parent->TotalValue=2000;
+            parent->children.clear();
+			return true;
+		}
+		if (v2>=200) 
+		{
+#if LOGGING4
+		f<<"Encountered a game losing move"<<std::endl;
+        print_board();
+#endif
+			parent->TotalValue=-2000;
+            parent->children.clear();
+			return true;
+		}
+        if (parent->depth%2)
+        {
+            //if we moved:
+            //if opponent has K-1 in a row we lost
+            if (v2>=50)
+            {
+#if LOGGING4
+                f<<"Encountered a forced game losing move"<<std::endl;
+                print_board();
+#endif
+                //if we moved and the opponent is one piece away from winning
+                //then we lost
+                parent->TotalValue=-2000;
+                parent->children.clear();
+                return true;
+            }
+            else return false;
+        }
+        if (v1>=100 && parent->depth%2==0)
+        {
+#if LOGGING4
+		f<<"Encountered a forced game winning move"<<std::endl;
+        print_board();
+#endif
+            return false;
+        }
+        else return false;
+	};
