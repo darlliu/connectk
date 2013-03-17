@@ -145,6 +145,7 @@ bool
                 GameTree->coord=lastmove.first;
                 GameTree->children.clear();
 				expand_all_children(GameTree,false);
+                determine_moves_made();
 			}
 #if LOGGING
 			f<<"parsing done"<<endl;
@@ -342,12 +343,15 @@ void
 	//first, what was the last move (temp) played?
 	//if depth is divisible by 2, then it is MY_PIECE
 	//else OPPONENT_PIECE
+    moves_left=ROWS*COLS-moves_made-root->depth;
 	if (root->depth%2)
     {
+        whose_turn=MY_PIECE;
 		mark_move(NewStates,mv(root->coord,MY_PIECE));
     }
 	else
     {
+        whose_turn=OPPONENT_PIECE;
 		mark_move(NewStates,mv(root->coord,OPPONENT_PIECE));
     }
 	if (root->depth<depth)
@@ -495,11 +499,14 @@ float Master::connections (movetype TYPE)
 			else flag=true;
 		} 
 		while (!flag);
+
         if (out>=K) return 200;
         else if (f1*f2 > 0)
 		{
 			if (out>=K-1)
 				return 100;
+			if (out>=K-2)
+				return 25;
 			else return out+1;
 		}
 		else if (out+f1+f2<K)
