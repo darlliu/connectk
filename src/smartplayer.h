@@ -138,7 +138,7 @@ class Smartplayer : public Master
                     }
                 }
             _spaces/=pieces;
-            return _spaces/9;
+            return _spaces/8;
         };
         
 
@@ -219,7 +219,9 @@ class Smartplayer : public Master
             f<<"val is  "<<val1<<std::endl;
             print_board();
 #endif
-            return val1+val2+val3-val4;
+            if (moves_left<=8)
+                return (val1);
+            return 2*val1+2*val2+val3-val4;
         };
 
 

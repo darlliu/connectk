@@ -379,7 +379,9 @@ void
 #if LOGGING2
                 f <<"pruned "<<alpha<<" "<<beta<<endl;
 #endif
-                break;
+                //if the moves left are very few we search exhausively.
+                if(moves_left>8)
+                    break;
             }
         }
 	}
@@ -613,6 +615,8 @@ bool Master::game_over(KTreeNode_ parent)
             parent->children.clear();
 			return true;
 		}
+        if (gravity) return false;
+        // at this point if we have gravity then nothing else needs to be considered.
         if (parent->depth%2)
         {
             //if we moved:
