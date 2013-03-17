@@ -11,12 +11,18 @@
 class threats : public Smartplayer
 {
     public:
+
+		
 		/* Running tally of threats for both players */
-	int threat_counts[MAX_CONNECT_K + 1][2];
+	std::vector<std::vector <int>> threat_counts;
 	myline line[];
 
 
-		threats() {};
+		threats() {
+			 threat_counts.resize(K + 1);
+			 for ( auto i : threat_counts ) i.resize(2);
+		
+		};
 
 int threatBits(int threat, int type)
 /* Bit pack the threat value */
@@ -50,7 +56,7 @@ void threatMark(int i, int threat, int type)
            enough to win */
 		//this->NewStates.
         //if (b->turn == type && connect_k - threat <= b->moves_left)
-		if ( == type && connect_k - threat <= b->moves_left)
+		if (   == type && connect_k - threat <= b->moves_left)
                 threat = connect_k - place_p + 1;
         else if (threat >= connect_k - place_p)
                 threat = connect_k - place_p - (type == b->turn);
@@ -79,6 +85,15 @@ int threatWidth(int x, int y, int dx, int dy,
         int min, max, count = 0;
         int p, type = 0;
 		int connect_k = 6;
+
+
+
+
+		//if ( k < 0 || k >=ROWS || l<0 || l >= COLS )
+
+
+
+
 
         /* Check if this tile is empty */
         //p = piece_at(b, x, y);
@@ -222,8 +237,45 @@ int threatMatch(int x, int y, int dx, int dy)
         return weight;
 };
 
-float threats(movetype TYPE)
+int threats(movetype TYPE)
 {
+	 AIMoves *moves;
+        AIWEIGHT u_sum = 0;
+        int i;
+
+        b = board_new();
+        board_copy(original, b);
+
+        /* Clear threat tallys */
+        for (i = 0; i < connect_k; i++) {
+                threat_counts[i][0] = 0;
+                threat_counts[i][1] = 0;
+        }
+
+        /* Horizontal lines */
+        for (i = 0; i < board_size; i++)
+                u_sum += threat_line(0, i, 1, 0);
+
+        /* Vertical lines */
+        for (i = 0; i < board_size; i++)
+                u_sum += threat_line(i, 0, 0, 1);
+
+        /* SE diagonals */
+        for (i = 0; i < board_size - connect_k + 1; i++)
+                u_sum += threat_line(i, 0, 1, 1);
+        for (i = 1; i < board_size - connect_k + 1; i++)
+                u_sum += threat_line(0, i, 1, 1);
+
+        /* SW diagonals */
+        for (i = connect_k - 1; i < board_size; i++)
+                u_sum += threat_line(i, 0, -1, 1);
+        for (i = 1; i < board_size - connect_k + 1; i++)
+                u_sum += threat_line(board_size - 1, i, -1, 1);
+
+        moves = ai_marks(b, PIECE_THREAT(1));
+        moves->utility = u_sum;
+        board_free(b);
+        return moves;
 
 };
 

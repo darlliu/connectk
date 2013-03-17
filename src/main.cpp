@@ -10,6 +10,5 @@ int main()
 	//m1.IDSearch();
 	//m1.update_frontier();
 	//auto a=m1.Get_Move();
-     
 	return 1;
 };
