@@ -16,7 +16,8 @@ typedef enum
 {
 	OPPONENT_PIECE=-1,
 	NO_PIECE,
-	MY_PIECE
+	MY_PIECE,
+    THREATS
 } movetype;
 typedef enum
 {

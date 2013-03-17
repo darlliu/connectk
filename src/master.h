@@ -117,7 +117,17 @@ THEN:
 			}
 			return mv(_mv(-1,-1),NO_PIECE);
 	};
-
+    void determine_moves_made()
+    {
+        moves_made=0;
+        for (unsigned i = 0; i<ROWS; i++)
+            for (unsigned j = 0; j<COLS; j++)
+            {
+                if (GameStates[i][j]!=NO_PIECE) 
+                    moves_made++;
+            }
+       return;
+    };
 	std::vector<mv> getAllMoves(const states& States,movetype mt=MY_PIECE)
 	{
 #if LOGGING
@@ -336,7 +346,8 @@ protected:
 	int time_limit;
 	int ROWS,COLS;
 	float alpha,beta,curval;
-	int K;
+	int K,moves_made, moves_left;
+    movetype whose_turn;
 	mv lastmove;
 	bool gravity;
 	std::priority_queue<KTreeNode_,std::vector<KTreeNode_>,cmpr_1> Frontier;
