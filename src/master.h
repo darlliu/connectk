@@ -248,43 +248,66 @@ SKIP:
 	{
 		auto v1=connections(MY_PIECE);
 		auto v2=connections(OPPONENT_PIECE);
-		if (v1==200) 
+        if (v1>=200 && v2>=200)
+        {
+#if LOGGING4
+		f<<"A problem occured where both are winning"<<std::endl;
+        print_board();
+#endif
+            if (parent->depth%2)
+            {
+                parent->TotalValue=-2000;
+                return true;
+            }
+            else return false;
+        }
+		if (v1>=200) 
 		{
 #if LOGGING4
 		f<<"Encountered a game winning move"<<std::endl;
         print_board();
 #endif
-			parent->TotalValue=200;
+			parent->TotalValue=2000;
             parent->children.clear();
 			return true;
 		}
-		if (v2==200) 
+		if (v2>=200) 
 		{
 #if LOGGING4
 		f<<"Encountered a game losing move"<<std::endl;
         print_board();
 #endif
-			parent->TotalValue=-200;
+			parent->TotalValue=-2000;
             parent->children.clear();
 			return true;
 		}
-        if (v1>=50 && parent->depth%2==0)
+        if (parent->depth%2)
         {
-            //if the opponent moved and we have a large advantage
-            //then we win
-            parent->TotalValue=v1;
-            parent->children.clear();
-            return true;
+            //if we moved:
+            //if opponent has K-1 in a row we lost
+            if (v2>=50)
+            {
+#if LOGGING4
+                f<<"Encountered a forced game losing move"<<std::endl;
+                print_board();
+#endif
+                //if we moved and the opponent is one piece away from winning
+                //then we lost
+                parent->TotalValue=-2000;
+                parent->children.clear();
+                return true;
+            }
+            else return false;
         }
-        else if (v2>=50 && parent->depth%2)
+        if (v1>=100 && parent->depth%2==0)
         {
-            //if we moved and the opponent is one piece away from winning
-            //then we lost
-            parent->TotalValue=-v2;
-            parent->children.clear();
-            return true;
+#if LOGGING4
+		f<<"Encountered a forced game winning move"<<std::endl;
+        print_board();
+#endif
+            return false;
         }
-		else return false;
+        else return false;
 	};
 	/* ====================  VIRTUALS     ======================================= */
 	virtual float addheuristic(){return 0.0;}; //some heuristic

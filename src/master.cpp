@@ -495,11 +495,14 @@ float Master::connections (movetype TYPE)
 			else flag=true;
 		} 
 		while (!flag);
+
         if (out>=K) return 200;
         else if (f1*f2 > 0)
 		{
 			if (out>=K-1)
 				return 100;
+			if (out>=K-2)
+				return 25;
 			else return out+1;
 		}
 		else if (out+f1+f2<K)

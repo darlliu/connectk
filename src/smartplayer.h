@@ -36,7 +36,7 @@ class Smartplayer : public Master
             int i,j;
             auto traverse=[this,&i,&j,&TYPE](int inc_row, int inc_col) -> float 
             {
-                float out=1,out2=0;
+                float out=1,f1=0, f2=0, out2=0;
                 auto k=i,l=j;
                 int cnts=0;
                 bool flag=false;
@@ -53,7 +53,7 @@ class Smartplayer : public Master
                     }
                     else if (this->NewStates[k][l]==NO_PIECE)
                     {
-                        out++;
+                        f1++;
                         cnts++;
                     }
                     else flag=true;
@@ -70,18 +70,19 @@ class Smartplayer : public Master
                     if(k<0 || k>=ROWS || l<0 || l>=COLS) flag=true;
                     else if (this->NewStates[k][l]==TYPE)
                     {
-                        out++;
+                        out2++;
                         cnts=0;
                     }
                     else if (this->NewStates[k][l]==NO_PIECE)
                     {
-                        out++;
+                        f2++;
                         cnts++;
                     }
                     else flag=true;
                 } 
                 while (!flag);
-                if( out+out2-K-1>0 ) return out+out2-K-1;
+                auto total=out+f1+f2+out2;
+                if( total-K-1>0 ) return (total-K-1)/(out+out2);
                 else return 0;
             };
             for ( i = 0; i < ROWS; i++) 
@@ -166,8 +167,6 @@ class Smartplayer : public Master
             //3, weakly prefer moves that increase our max connection
 			auto my=myconnections();
 			auto their=theirconnections();
-            if (my==100) return 100;
-            else if (their==100) return -100;
             return (my-their)/K;
         };
         virtual float myspaces()
@@ -220,7 +219,7 @@ class Smartplayer : public Master
             f<<"val is  "<<val1<<std::endl;
             print_board();
 #endif
-            return val1+val2+0.5*val3-0.5*val4;
+            return val1+val2+val3-val4;
         };
 
 
