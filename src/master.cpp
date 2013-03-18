@@ -539,6 +539,7 @@ float Master::connections (movetype TYPE)
                 return 100;
             if (out1+out>=K-2)
                 return 50;
+			else return out+1;
         }
         else if (out2>=1)
         {
@@ -546,6 +547,7 @@ float Master::connections (movetype TYPE)
                 return 100;
             if (out2+out>=K-2)
                 return 50;
+			else return out+1;
         }
         else if (f1*f2 > 0)
 		{

@@ -120,8 +120,8 @@ THEN:
     void determine_moves_made()
     {
         moves_made=0;
-        for (unsigned i = 0; i<ROWS; i++)
-            for (unsigned j = 0; j<COLS; j++)
+        for (int i = 0; i<ROWS; i++)
+            for (int j = 0; j<COLS; j++)
             {
                 if (GameStates[i][j]!=NO_PIECE) 
                     moves_made++;

@@ -66,6 +66,7 @@
     <ClInclude Include="..\..\..\src\headers.h" />
     <ClInclude Include="..\..\..\src\master.h" />
     <ClInclude Include="..\..\..\src\smartplayer.h" />
+    <ClInclude Include="..\..\..\src\threats.h" />
     <ClInclude Include="..\..\..\src\utils.h" />
   </ItemGroup>
   <ItemGroup>
