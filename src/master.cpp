@@ -407,21 +407,21 @@ void
 	Master::test_init (  )
 {
 	//initialize a test situation
-	GameStates.resize(5);
-	for (int i=0; i<5; i++)
+	GameStates.resize(6);
+	for (int i=0; i<6; i++)
 	{
-		GameStates[i].resize(5);
+		GameStates[i].resize(6);
 	}
-	ROWS=5;
-	COLS=5;
+	ROWS=6;
+	COLS=6;
 	K=4;
 	gravity=false;
 	time_limit=40000000000000;
 	mv lastmove=mv(_mv(0,0),MY_PIECE);
 	mark_move(GameStates,lastmove);
-	lastmove=mv(_mv(2,2),OPPONENT_PIECE);
+	lastmove=mv(_mv(4,2),OPPONENT_PIECE);
 	mark_move(GameStates,lastmove);
-	lastmove=mv(_mv(2,3),OPPONENT_PIECE);
+	lastmove=mv(_mv(4,3),OPPONENT_PIECE);
 	mark_move(GameStates,lastmove);
 	NewStates=GameStates;
 	GameTree->coord=_mv(1,0);

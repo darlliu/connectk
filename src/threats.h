@@ -2,6 +2,11 @@
 #define THREATS_H
 #include "smartplayer.h"
 #include"utils.h"
+#include<iostream>
+#include<string>
+#include<stdlib.h>
+using namespace std;
+
 /*
  * =====================================================================================
  *        Class:  Smartplayer
@@ -12,7 +17,9 @@
 class threats : public Smartplayer
 {
     public:
-
+		
+		
+		//f.open("logs.txt");
 		 struct myline {
         int threat[2];
         int turn[2];
@@ -23,10 +30,12 @@ class threats : public Smartplayer
 	std::vector<std::vector <int>> threat_counts;
 	std::vector<myline> line;
 
-
+	
 		threats() {
+			f.open("logs.txt");
 			K = 4;
-			line.resize(K+1);
+			//line.resize(ROWS+COLS);
+			line.resize(12);
 			for ( int i=0; i < K; i++ ) 
 			{
 				std::vector<int> vec;
@@ -97,15 +106,6 @@ int threatWidth(int x, int y, int dx, int dy,
         int min, max, count = 0;
         int p, type = 0;
 		int connect_k = K;
-
-
-
-
-		//if ( k < 0 || k >=ROWS || l<0 || l >= COLS )
-
-
-
-
 
         /* Check if this tile is empty */
         //p = piece_at(b, x, y);
@@ -208,6 +208,8 @@ int threatMatch(int x, int y, int dx, int dy)
                         type[1] = type[0];
                         type[0] = tmp;
                 }
+
+				
                 line[i].threat[0] = 0;
                 line[i].threat[1] = 0;
                 threatMark(i, count[0], type[0]);
@@ -220,9 +222,10 @@ int threatMatch(int x, int y, int dx, int dy)
         /* Commit stored line values to the board */
         x -= dx;
         y -= dy;
-        for (i--; x >= 0 && x < board_size && y >= 0 && y < board_size; i--) {
+        for (i--; x >= 0 && x < ROWS && y >= 0 && y < COLS; i--) {
                 int bits[2];
                 int p;
+				if ( i < 0 ) break;
 
                 bits[0] = threatBits(line[i].threat[0], line[i].turn[0]);
                 bits[1] = threatBits(line[i].threat[1], line[i].turn[1]);
@@ -258,8 +261,7 @@ int threats_ai(movetype TYPE)
         int u_sum = 0;
         int i;
 
-        //b = board_new();
-        //board_copy(original, b);
+       
 
         /* Clear threat tallys */
         for (i = 0; i < K; i++) {
@@ -268,24 +270,30 @@ int threats_ai(movetype TYPE)
         }
 
         /* Horizontal lines */
+		//f <<"before line "<<" total iteration is (slightly less than) "<<__i__<<endl;
         for (i = 0; i < ROWS; i++)
                 u_sum += threatMatch(0, i, 1, 0);
-
+		//f <<"traversing through a node at depth "<<" total iteration is (slightly less than) "<<u_sum<<endl;
         /* Vertical lines */
         for (i = 0; i < COLS; i++)
                 u_sum += threatMatch(i, 0, 0, 1);
 
         /* SE diagonals */
         for (i = 0; i < ROWS - K + 1; i++)
-                u_sum += threatMatch(i, 0, 1, 1);
+                //u_sum += threatMatch(i, 0, 1, 1);
         for (i = 1; i < COLS - K + 1; i++)
-                u_sum += threatMatch(0, i, 1, 1);
+                //u_sum += threatMatch(0, i, 1, 1);
 
         /* SW diagonals */
-        for (i = K - 1; i < ROWS; i++)
-                u_sum += threatMatch(i, 0, -1, 1);
+        //for (i = K - 1; i < ROWS; i++)
+               // u_sum += threatMatch(i, 0, -1, 1);
+        //for (i = 1; i < COLS; i++)
+               // u_sum += threatMatch(0, i, -1, 1);
+
+		for (i = 0; i < ROWS - K + 1; i++)
+               // u_sum += threatMatch(i, 0, -1, 1);
         for (i = 1; i < COLS - K + 1; i++)
-                u_sum += threatMatch(COLS - 1, i, -1, 1);
+                //u_sum += threatMatch(0, i, -1, 1);
 
         //moves = ai_marks(b, PIECE_THREAT(1));
         //moves->utility = u_sum;
@@ -309,9 +317,18 @@ int threats_ai(movetype TYPE)
 #endif
             if (moves_left<=8)
                 return (val1);
-            return 2*val1+2*val2+val3-val4+val5-val6;
+
+
+			
+			f <<val1 << " " << val2 << " " << val3 << " " << val4 << " " << val5 << " "<<  val6 <<endl;
+			//f << 2*val1+2*val2+val3-val4+(.0001 *val5 )-(.0001 * val6 ) << endl;
+            return 2*val1+2*val2+val3-val4+(.0001 *val5 )-(.0001  * val6 );
 			//return 2*val1+2*val2+val3-val4;
 	};
+
+	protected:
+		std::ofstream f;
+
 };
 
 
