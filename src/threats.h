@@ -32,18 +32,18 @@ class threats : public Smartplayer
 
 	
 		threats() {
-			f.open("logs.txt");
-			K = 4;
-			//line.resize(ROWS+COLS);
-			line.resize(12);
-			for ( int i=0; i < K; i++ ) 
-			{
-				std::vector<int> vec;
-				vec.resize(2);
-				threat_counts.push_back(vec);
-			}
-		
 		};
+void init()
+{
+	//line.resize(ROWS+COLS);
+	line.resize(ROWS+COLS);
+	for ( int i=0; i < K; i++ ) 
+	{
+		std::vector<int> vec;
+		vec.resize(2);
+		threat_counts.push_back(vec);
+	}
+};
 
 int threatBits(int threat, int type)
 /* Bit pack the threat value */
@@ -279,9 +279,9 @@ int threats_ai(movetype TYPE)
                 u_sum += threatMatch(i, 0, 0, 1);
 
         /* SE diagonals */
-        for (i = 0; i < ROWS - K + 1; i++)
+        //for (i = 0; i < ROWS - K + 1; i++)
                 //u_sum += threatMatch(i, 0, 1, 1);
-        for (i = 1; i < COLS - K + 1; i++)
+        //for (i = 1; i < COLS - K + 1; i++)
                 //u_sum += threatMatch(0, i, 1, 1);
 
         /* SW diagonals */
@@ -290,9 +290,9 @@ int threats_ai(movetype TYPE)
         //for (i = 1; i < COLS; i++)
                // u_sum += threatMatch(0, i, -1, 1);
 
-		for (i = 0; i < ROWS - K + 1; i++)
+		//for (i = 0; i < ROWS - K + 1; i++)
                // u_sum += threatMatch(i, 0, -1, 1);
-        for (i = 1; i < COLS - K + 1; i++)
+        //for (i = 1; i < COLS - K + 1; i++)
                 //u_sum += threatMatch(0, i, -1, 1);
 
         //moves = ai_marks(b, PIECE_THREAT(1));
@@ -303,6 +303,22 @@ int threats_ai(movetype TYPE)
 
 };
 
+	virtual void main_routine() override
+	{
+		while (!listen(1));
+		init();
+		IDSearch();
+		update_frontier();
+		auto m=Get_Move();
+		tell_move(m);
+		while (listen(false))
+		{
+			IDSearch();
+			update_frontier();
+			m=Get_Move();
+			tell_move(m);
+		}
+	};
 	virtual float addheuristic() override
 	{
 		    auto val1=count_connections();
@@ -325,9 +341,6 @@ int threats_ai(movetype TYPE)
             return 2*val1+2*val2+val3-val4+(.0001 *val5 )-(.0001  * val6 );
 			//return 2*val1+2*val2+val3-val4;
 	};
-
-	protected:
-		std::ofstream f;
 
 };
 
