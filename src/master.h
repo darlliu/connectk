@@ -105,7 +105,7 @@ public:
 		for (int i=0; i<ROWS; i++)
 			for (int j=0; j<COLS; j++)
 			{
-				if (States[i][j]==NO_PIECE)
+				if (States[i][j]==NO_PIECE || States[i][j]==THREATS)
 					//we check if the move is made in the children already
 						for (auto it: node->children)
 							if (it->coord.first==i && it->coord.second==j) goto THEN;
@@ -123,7 +123,7 @@ THEN:
         for (int i = 0; i<ROWS; i++)
             for (int j = 0; j<COLS; j++)
             {
-                if (GameStates[i][j]!=NO_PIECE) 
+                if (GameStates[i][j]!=NO_PIECE && GameStates[i][j]!=THREATS) 
                     moves_made++;
             }
        return;
@@ -138,7 +138,7 @@ THEN:
 		{
 			for (int j=0; j<COLS; j++)
 			{
-				if (States[i][j]==NO_PIECE)
+				if (States[i][j]==NO_PIECE || States[i][j]==THREATS)
 				{
 					out.push_back( mv(_mv(i,j),mt) );
 					if (gravity) goto SKIP;
@@ -162,7 +162,7 @@ SKIP:
 		{
 			for (int j=0; j<COLS; j++)
 			{
-				if (States[i][j]==NO_PIECE)
+				if (States[i][j]==NO_PIECE || States[i][j]==THREATS)
 					//we check if the move is made in the children already
 				{
 					for (auto it:node->children)

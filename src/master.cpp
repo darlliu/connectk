@@ -344,6 +344,7 @@ void
 	//if depth is divisible by 2, then it is MY_PIECE
 	//else OPPONENT_PIECE
     moves_left=ROWS*COLS-moves_made-root->depth;
+	auto _mytype= NewStates[root->coord.first][root->coord.second];
 	if (root->depth%2)
     {
         whose_turn=MY_PIECE;
@@ -389,12 +390,12 @@ void
 	{
 		auto val=addheuristic();
 		root->TotalValue=val;
-        mark_move(NewStates,mv(root->coord,NO_PIECE));
+        mark_move(NewStates,mv(root->coord,_mytype));
         return;
 	}
 	root->children.clear();
 	//this makes linear memory
-	mark_move(NewStates,mv(root->coord,NO_PIECE));
+	mark_move(NewStates,mv(root->coord,_mytype));
 	//unplay this move
 #if LOGGING2
 	f <<"alpha beta is now "<<alpha<<" "<<beta<<endl;
@@ -469,7 +470,8 @@ float Master::connections (movetype TYPE)
 			k+=inc_row;
 			l+=inc_col;
 			if(k<0 || k>=ROWS || l<0 || l>=COLS) flag=true;
-			else if(this->NewStates[k][l]==NO_PIECE)
+			else if(this->NewStates[k][l]==NO_PIECE\
+						|| this->NewStates[k][l]==THREATS)
 				f1++;
 			else flag=true;
 		} 
@@ -510,7 +512,8 @@ float Master::connections (movetype TYPE)
 			k-=inc_row;
 			l-=inc_col;
 			if(k<0 || k>=ROWS || l<0 || l>=COLS) flag=true;
-			else if(this->NewStates[k][l]==NO_PIECE)
+			else if(this->NewStates[k][l]==NO_PIECE\
+					|| this->NewStates[k][l]==THREATS)
 				f2++;
 			else flag=true;
 		} 

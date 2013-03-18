@@ -51,7 +51,8 @@ class Smartplayer : public Master
                         out++;
                         cnts=0;
                     }
-                    else if (this->NewStates[k][l]==NO_PIECE)
+                    else if (this->NewStates[k][l]==NO_PIECE \
+						|| this->NewStates[k][l]==THREATS)
                     {
                         f1++;
                         cnts++;
@@ -73,7 +74,8 @@ class Smartplayer : public Master
                         out2++;
                         cnts=0;
                     }
-                    else if (this->NewStates[k][l]==NO_PIECE)
+                    else if (this->NewStates[k][l]==NO_PIECE
+						|| this->NewStates[k][l]==THREATS)
                     {
                         f2++;
                         cnts++;
@@ -122,7 +124,8 @@ class Smartplayer : public Master
                     l+=jj;
                     if(k<0 || k>=ROWS || l<0 || l>=COLS) continue;
                     if (this->NewStates[k][l]==MY_PIECE\
-                            ||this->NewStates[k][l]==NO_PIECE)
+                            ||this->NewStates[k][l]==NO_PIECE\
+							|| this->NewStates[k][l]==THREATS)
                         spaces+=1.0;
                 }
                 return spaces;
