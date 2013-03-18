@@ -26,8 +26,13 @@ class threats : public Smartplayer
 
 		threats() {
 			K = 4;
-			 threat_counts.resize(K + 1);
-			 for ( auto i : threat_counts ) i.resize(2);
+			line.resize(K+1);
+			for ( int i=0; i < K; i++ ) 
+			{
+				std::vector<int> vec;
+				vec.resize(2);
+				threat_counts.push_back(vec);
+			}
 		
 		};
 
