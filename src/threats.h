@@ -44,7 +44,7 @@ int threatBits(int threat, int type)
         if ( whose_turn == type && connect_k - threat <= moves_left)
                 threat = connect_k - place_p + 1;
         else if (threat >= connect_k - place_p)
-                threat = connect_k - place_p - (type == b->turn);
+                threat = connect_k - place_p - (type == whose_turn);
 
         return 1 << ((threat - 1) * BITS_PER_THREAT);
 }
@@ -178,7 +178,7 @@ int threatWidth(int x, int y, int dx, int dy,
 int placeThreat (int x, int y, int type)
 {
 	int board_stride = 8;
-	b->data[(y + 1) * board_stride + x + 1] = type;
+	//b->data[(y + 1) * board_stride + x + 1] = type;
 };
 
 int threatMatch(int x, int y, int dx, int dy)
