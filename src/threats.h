@@ -290,7 +290,7 @@ int threats_ai(movetype TYPE)
 
 };
 
-	virtual float addheuristic()
+	virtual float addheuristic() override
 	{
 		    auto val1=count_connections();
             auto val2=myspaces();
