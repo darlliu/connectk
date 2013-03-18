@@ -1,6 +1,7 @@
 #ifndef THREATS_H
 #define THREATS_H
 #include "smartplayer.h"
+#include"utils.h"
 /*
  * =====================================================================================
  *        Class:  Smartplayer
@@ -11,6 +12,11 @@
 class threats : public Smartplayer
 {
     public:
+
+		 struct myline {
+        int threat[2];
+        int turn[2];
+		};
 
 		
 		/* Running tally of threats for both players */
@@ -27,15 +33,15 @@ class threats : public Smartplayer
 int threatBits(int threat, int type)
 /* Bit pack the threat value */
 {
-	int connect_k = 6;
+	int connect_k = K;
 	int place_p = 2;
-	int BITS_PER_THREAT = 6;
+	int BITS_PER_THREAT = K;
         if (threat < 1)
                 return 0;
 
         /* No extra value for building sequences over k - p unless it is
            enough to win */
-        if (b->turn == type && connect_k - threat <= b->moves_left)
+        if ( whose_turn == type && connect_k - threat <= moves_left)
                 threat = connect_k - place_p + 1;
         else if (threat >= connect_k - place_p)
                 threat = connect_k - place_p - (type == b->turn);
@@ -46,7 +52,7 @@ int threatBits(int threat, int type)
 void threatMark(int i, int threat, int type)
 {
         int j, index = 0;
-		int connect_k = 6;
+		int connect_k = K;
 		int place_p = 2;
 
         if (threat <= 0)
@@ -56,10 +62,10 @@ void threatMark(int i, int threat, int type)
            enough to win */
 		//this->NewStates.
         //if (b->turn == type && connect_k - threat <= b->moves_left)
-		if (   == type && connect_k - threat <= b->moves_left)
+		if ( whose_turn == type && connect_k - threat <= moves_left)
                 threat = connect_k - place_p + 1;
         else if (threat >= connect_k - place_p)
-                threat = connect_k - place_p - (type == b->turn);
+                threat = connect_k - place_p - (type == whose_turn);
 
         /* Do not mark if this threat is dominated by a preceeding threat;
            Likewise supress any smaller threats */
@@ -84,7 +90,7 @@ int threatWidth(int x, int y, int dx, int dy,
 {
         int min, max, count = 0;
         int p, type = 0;
-		int connect_k = 6;
+		int connect_k = K;
 
 
 
@@ -104,6 +110,8 @@ int threatWidth(int x, int y, int dx, int dy,
 
         /* Push forward the max and find the window type */
         for (max = 1; max < connect_k; max++) {
+
+			if ( (x + dx * max) < 0 || (x + dx * max) >=ROWS || (y + dy * max)<0 || (y + dy * max) >= COLS ) break;
                 //p = piece_at(b, x + dx * max, y + dy * max);
 			p = this->NewStates[x + dx * max][ y + dy * max];
                 //if (p == PIECE_ERROR)
@@ -121,6 +129,7 @@ int threatWidth(int x, int y, int dx, int dy,
         /* Try to push the entire window back */
         for (min = -1; min > -connect_k; min--) {
                 //p = piece_at(b, x + dx * min, y + dy * min);
+			if ( (x + dx * min) < 0 || (x + dx * min) >=ROWS || (y + dy * min)<0 || (y + dy * min) >= COLS ) break;
 				p = this->NewStates[x + dx * min][ y + dy * min];
                 //if (p == PIECE_ERROR || piece_empty(p))
                         //break;
@@ -144,6 +153,7 @@ int threatWidth(int x, int y, int dx, int dy,
         if (max - min < connect_k - 1) {
                 for (min--; min > max - connect_k; min--) {
                        // p = piece_at(b, x + dx * min, y + dy * min);
+					if ( (x + dx * min) < 0 || (x + dx * min) >=ROWS || (y + dy * min)<0 || (y + dy * min) >= COLS ) break;
 						p = this->NewStates[x + dx * min][y + dy * min];
                         //if (p == PIECE_ERROR)
                                 //break;
@@ -178,7 +188,7 @@ int threatMatch(int x, int y, int dx, int dy)
 		int board_size = 6;
 
         /* Mark the maximum threat for each */
-        for (i = 0; x >= 0 && x < board_size && y >= 0 && y < board_size; i++) {
+        for (i = 0; x >= 0 && x < ROWS && y >= 0 && y < COLS; i++) {
                 int count[2], tmp, double_threat = 1;
                 int type[2];
 
@@ -219,15 +229,15 @@ int threatMatch(int x, int y, int dx, int dy)
                         if (line[i].threat[1])
                                 threat_counts[line[i].threat[1]]
                                              [line[i].turn[1] - 1]++;
-                        if (p >= PIECE_THREAT0)
-                                placeThreat(b, x, y, p - PIECE_THREAT0 +
+                        if (p >= THREATS)
+                                placeThreat( x, y, p - THREATS +
                                              bits[0] + bits[1]);
                         else
-                                placeThreat(b, x, y, bits[0] + bits[1]);
+                                placeThreat( x, y, bits[0] + bits[1]);
                 }
-                if (b->turn != line[i].turn[0])
+                if (NewStates[x][y] != line[i].turn[0])
                         bits[0] = -bits[0];
-                if (b->turn != line[i].turn[1])
+                if (NewStates[x][y] != line[i].turn[1])
                         bits[1] = -bits[1];
                 weight += bits[0] + bits[1];
                 x -= dx;
@@ -237,45 +247,46 @@ int threatMatch(int x, int y, int dx, int dy)
         return weight;
 };
 
-int threats(movetype TYPE)
+int threats_ai(movetype TYPE)
 {
-	 AIMoves *moves;
-        AIWEIGHT u_sum = 0;
+	 //AIMoves *moves;
+        int u_sum = 0;
         int i;
 
-        b = board_new();
-        board_copy(original, b);
+        //b = board_new();
+        //board_copy(original, b);
 
         /* Clear threat tallys */
-        for (i = 0; i < connect_k; i++) {
+        for (i = 0; i < K; i++) {
                 threat_counts[i][0] = 0;
                 threat_counts[i][1] = 0;
         }
 
         /* Horizontal lines */
-        for (i = 0; i < board_size; i++)
-                u_sum += threat_line(0, i, 1, 0);
+        for (i = 0; i < ROWS; i++)
+                u_sum += threatMatch(0, i, 1, 0);
 
         /* Vertical lines */
-        for (i = 0; i < board_size; i++)
-                u_sum += threat_line(i, 0, 0, 1);
+        for (i = 0; i < COLS; i++)
+                u_sum += threatMatch(i, 0, 0, 1);
 
         /* SE diagonals */
-        for (i = 0; i < board_size - connect_k + 1; i++)
-                u_sum += threat_line(i, 0, 1, 1);
-        for (i = 1; i < board_size - connect_k + 1; i++)
-                u_sum += threat_line(0, i, 1, 1);
+        for (i = 0; i < ROWS - K + 1; i++)
+                u_sum += threatMatch(i, 0, 1, 1);
+        for (i = 1; i < COLS - K + 1; i++)
+                u_sum += threatMatch(0, i, 1, 1);
 
         /* SW diagonals */
-        for (i = connect_k - 1; i < board_size; i++)
-                u_sum += threat_line(i, 0, -1, 1);
-        for (i = 1; i < board_size - connect_k + 1; i++)
-                u_sum += threat_line(board_size - 1, i, -1, 1);
+        for (i = K - 1; i < ROWS; i++)
+                u_sum += threatMatch(i, 0, -1, 1);
+        for (i = 1; i < COLS - K + 1; i++)
+                u_sum += threatMatch(COLS - 1, i, -1, 1);
 
-        moves = ai_marks(b, PIECE_THREAT(1));
-        moves->utility = u_sum;
-        board_free(b);
-        return moves;
+        //moves = ai_marks(b, PIECE_THREAT(1));
+        //moves->utility = u_sum;
+        //board_free(b);
+        //return moves;
+		return u_sum;
 
 };
 

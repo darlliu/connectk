@@ -15,6 +15,8 @@
 #ifndef SMARTPLAYER_H
 #define SMARTPLAYER_H
 #include "master.h"
+#include "threats.h"
+
 /*
  * =====================================================================================
  *        Class:  Smartplayer
@@ -24,8 +26,12 @@
 class Smartplayer : public Master
 {
     public:
+
+		threats myThreats;
         /* ====================  LIFECYCLE     ======================================= */
-        Smartplayer (){};                             /* constructor */
+        Smartplayer (){
+			///myThreats = new threats();
+		};                             /* constructor */
 
         /* ====================  UTILITY     ======================================= */
         float winning_seqs (movetype TYPE=MY_PIECE)
@@ -215,6 +221,7 @@ class Smartplayer : public Master
             auto val2=myspaces();
             auto val3=my_seqs();
             auto val4=their_seqs();
+			auto val5=myThreats.threats_ai();
 #if LOGGING3
             f<<"val is  "<<val1<<std::endl;
             print_board();
