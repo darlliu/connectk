@@ -415,7 +415,7 @@ void
 	COLS=5;
 	K=4;
 	gravity=false;
-	time_limit=4000;
+	time_limit=40000000000000;
 	mv lastmove=mv(_mv(0,0),MY_PIECE);
 	mark_move(GameStates,lastmove);
 	lastmove=mv(_mv(2,2),OPPONENT_PIECE);

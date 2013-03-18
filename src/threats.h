@@ -25,6 +25,7 @@ class threats : public Smartplayer
 
 
 		threats() {
+			K = 4;
 			 threat_counts.resize(K + 1);
 			 for ( auto i : threat_counts ) i.resize(2);
 		
@@ -175,7 +176,7 @@ int threatWidth(int x, int y, int dx, int dy,
         return 0;
 };
 
-int placeThreat (int x, int y, int type)
+void placeThreat (int x, int y, int type)
 {
 	int board_stride = 8;
 	//b->data[(y + 1) * board_stride + x + 1] = type;
@@ -227,11 +228,10 @@ int threatMatch(int x, int y, int dx, int dy)
 				if (p == NO_PIECE && line[i].threat[0]) {
                         threat_counts[line[i].threat[0]][line[i].turn[0] - 1]++;
                         if (line[i].threat[1])
-                                threat_counts[line[i].threat[1]]
-                                             [line[i].turn[1] - 1]++;
+                                threat_counts[line[i].threat[1]][line[i].turn[1] - 1]++;
                         if (p >= THREATS)
-                                placeThreat( x, y, p - THREATS +
-                                             bits[0] + bits[1]);
+                                //placeThreat( x, y, p - THREATS + bits[0] + bits[1]);
+									placeThreat( x, y, THREATS);
                         else
                                 placeThreat( x, y, bits[0] + bits[1]);
                 }
@@ -299,12 +299,13 @@ int threats_ai(movetype TYPE)
 			float val5=(float)threats_ai(MY_PIECE);
 			float val6=(float)threats_ai(OPPONENT_PIECE);
 #if LOGGING3
-            f<<"val is  "<<val1<<std::endl;
+            f<<"val is  "<<val5<<std::endl;
             print_board();
 #endif
             if (moves_left<=8)
                 return (val1);
             return 2*val1+2*val2+val3-val4+val5-val6;
+			//return 2*val1+2*val2+val3-val4;
 	};
 };
 
