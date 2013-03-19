@@ -4,6 +4,7 @@
 core.*
 a.out
 logs.txt
+ConKuerer.exe
 *.txt
 *.pydevproject
 .project
