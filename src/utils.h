@@ -35,6 +35,6 @@ typedef std::vector<std::vector<movetype>> states;
 #define LOGGING2 0
 #define LOGGING3 0
 #define LOGGING4 0
-#define LOGGING5 1
+#define LOGGING5 0
 
 #endif

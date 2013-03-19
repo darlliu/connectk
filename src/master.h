@@ -73,7 +73,7 @@ public:
 		gravity(0),
 		GameTree(new KTreeNode)
 	{
-#if 1
+#if 0
 		f.open("logs.txt");
 #endif
 		// our tree, don't lose it!
@@ -296,7 +296,7 @@ protected:
 	// std vector does deep copy by default so a reassignment can be used to make copy
 	// this is a state, NOT the search tree and not describe the search space. constant size
 
-#if 1
+#if 0
 	std::ofstream f;
 	unsigned __i__;
 #endif

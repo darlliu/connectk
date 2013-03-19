@@ -222,9 +222,7 @@ class Smartplayer : public Master
             f<<"val is  "<<val1<<std::endl;
             print_board();
 #endif
-            if (moves_left<=8)
-                return (val1);
-            return 2*val1+2*val2+val3-val4;
+            return val1+val2+val3-val4;
         };
 
 

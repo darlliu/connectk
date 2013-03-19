@@ -296,6 +296,8 @@ void
 		//we do not reset
 		for(auto root:temp_queue)
 		{
+            alpha=-1000;
+            beta=1000;
 			//pruning parameters
 			curval=0;
 			if (time_up()) return;
@@ -381,8 +383,7 @@ void
                 f <<"pruned "<<alpha<<" "<<beta<<endl;
 #endif
                 //if the moves left are very few we search exhausively.
-                if(moves_left>8)
-                    break;
+                break;
             }
         }
 	}
@@ -416,7 +417,7 @@ void
 	COLS=6;
 	K=4;
 	gravity=false;
-	time_limit=40000000000000;
+	time_limit=4000;
 	mv lastmove=mv(_mv(0,0),MY_PIECE);
 	mark_move(GameStates,lastmove);
 	lastmove=mv(_mv(4,2),OPPONENT_PIECE);
@@ -432,6 +433,7 @@ void
 }		/* -----  end of function test_init  ----- */
 void Master::print_board()
 {
+#if 0
     for (int col =0; col<ROWS; col++){
         for (int row =0; row<COLS; row++){
             f<<(int)NewStates[col][row];
@@ -439,6 +441,7 @@ void Master::print_board()
         }
         f<<endl;
     }
+#endif
 };
 
 float Master::connections (movetype TYPE)
@@ -557,14 +560,14 @@ float Master::connections (movetype TYPE)
 			if (out>=K-1)
 				return 100;
 			if (out>=K-2)
-				return 50;
+				return 51;
 			else return out+1;
 		}
 		else if (out+f1+f2<K)
 			return 0;
 		else
 		{
-			if (out>=K-1) return 50;
+			if (out>=K-1) return 51;
 			else return out;
 		}
 		
@@ -580,9 +583,17 @@ float Master::connections (movetype TYPE)
 				_connected.push_back(OUTS[3]);
 			}
 		}
-	if (_connected.size()==0) return 0; 
-	std::sort(_connected.begin(), _connected.end());
-	return (*_connected.rbegin());
+    if (_connected.size()==0) return 0; 
+    std::sort(_connected.begin(), _connected.end());
+    auto it=_connected.rbegin();
+    auto val=*it;
+    if (_connected.size()>1 && val>=50)
+    {
+        it++;
+        if (*it==51)
+            return 100;
+    }
+    return val;
 };
 
 

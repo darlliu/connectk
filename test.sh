@@ -1,1 +1,1 @@
-java -jar ConnectK.jar cpp:./a.out
+java -jar ConnectK.jar cpp:./ConKuerer.exe
