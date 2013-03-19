@@ -1,0 +1,14 @@
+building project, for team Yu/Afshin
+checking available modules
+glibc/2.8                                    
+attempting module load
+Commencing build, GCC ver is:
+checking ld has libm
+	libm.so.6 -> libm-2.5.so
+	libm.so.6 -> libm-2.5.so
+checking ld has libc
+	libc.so.6 -> libc-2.5.so
+	libc.so.6 -> libc-2.5.so
+Please make sure gcc version is above 4.7!!! Otherwise build WILL FAIL
+Please do not unload gcc/4.7.1 because the program is now linked dynamically
+ConKuerer.exe

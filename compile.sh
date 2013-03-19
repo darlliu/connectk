@@ -1,5 +1,7 @@
 cd src
 echo "building project, for team Yu/Afshin"
+echo "checking available modules"
+module avail 2>&1 | grep glibc
 echo "attempting module load"
 module load gcc/4.7.1
 echo "Commencing build, GCC ver is:"

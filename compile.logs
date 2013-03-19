@@ -1,0 +1,138 @@
+Using built-in specs.
+COLLECT_GCC=g++
+COLLECT_LTO_WRAPPER=/pkg/gcc/4.7.1-el5/libexec/gcc/x86_64-pc-linux-gnu/4.7.1/lto-wrapper
+Target: x86_64-pc-linux-gnu
+Configured with: ../configure --build=x86_64-pc-linux-gnu --prefix=/pkg/gcc/4.7.1-el5 --disable-multilib
+Thread model: posix
+gcc version 4.7.1 (GCC) 
+ldconfig: Can't open configuration file /etc/ld.so.conf.d/postgresql-pgdg-libs.conf: Permission denied
+ldconfig: Can't create temporary cache file /etc/ld.so.cache~: Permission denied
+ldconfig: Can't open configuration file /etc/ld.so.conf.d/postgresql-pgdg-libs.conf: Permission denied
+ldconfig: Can't create temporary cache file /etc/ld.so.cache~: Permission denied
+Using built-in specs.
+COLLECT_GCC=g++
+COLLECT_LTO_WRAPPER=/pkg/gcc/4.7.1-el5/libexec/gcc/x86_64-pc-linux-gnu/4.7.1/lto-wrapper
+Target: x86_64-pc-linux-gnu
+Configured with: ../configure --build=x86_64-pc-linux-gnu --prefix=/pkg/gcc/4.7.1-el5 --disable-multilib
+Thread model: posix
+gcc version 4.7.1 (GCC) 
+COLLECT_GCC_OPTIONS='-v' '-o' 'ConKuerer.exe' '-O3' '-std=c++11' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+ /pkg/gcc/4.7.1-el5/libexec/gcc/x86_64-pc-linux-gnu/4.7.1/cc1plus -quiet -v -D_GNU_SOURCE main.cpp -quiet -dumpbase main.cpp -mtune=generic -march=x86-64 -auxbase main -O3 -std=c++11 -version -o /tmp/ccTzuhhi.s
+GNU C++ (GCC) version 4.7.1 (x86_64-pc-linux-gnu)
+	compiled by GNU C version 4.7.1, GMP version 4.3.2, MPFR version 2.4.2, MPC version 0.8.1
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+ignoring duplicate directory "/pkg/gcc/4.7.1-el5/include"
+ignoring nonexistent directory "/pkg/gcc/4.7.1-el5/lib/gcc/x86_64-pc-linux-gnu/4.7.1/../../../../x86_64-pc-linux-gnu/include"
+#include "..." search starts here:
+#include <...> search starts here:
+ /pkg/gcc/4.7.1-el5/include
+ /pkg/gcc/4.7.1-el5/lib/gcc/x86_64-pc-linux-gnu/4.7.1/../../../../include/c++/4.7.1
+ /pkg/gcc/4.7.1-el5/lib/gcc/x86_64-pc-linux-gnu/4.7.1/../../../../include/c++/4.7.1/x86_64-pc-linux-gnu
+ /pkg/gcc/4.7.1-el5/lib/gcc/x86_64-pc-linux-gnu/4.7.1/../../../../include/c++/4.7.1/backward
+ /pkg/gcc/4.7.1-el5/lib/gcc/x86_64-pc-linux-gnu/4.7.1/include
+ /usr/local/include
+ /pkg/gcc/4.7.1-el5/lib/gcc/x86_64-pc-linux-gnu/4.7.1/include-fixed
+ /usr/include
+End of search list.
+GNU C++ (GCC) version 4.7.1 (x86_64-pc-linux-gnu)
+	compiled by GNU C version 4.7.1, GMP version 4.3.2, MPFR version 2.4.2, MPC version 0.8.1
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+Compiler executable checksum: 6ed99163b1bffda2ca9d37141bca0d08
+COLLECT_GCC_OPTIONS='-v' '-o' 'ConKuerer.exe' '-O3' '-std=c++11' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+ as -v --64 -o /tmp/cc55Z4lQ.o /tmp/ccTzuhhi.s
+GNU assembler version 2.17.50.0.6-20.el5_8.3 (x86_64-redhat-linux) using BFD version 2.17.50.0.6-20.el5_8.3 20061020
+COLLECT_GCC_OPTIONS='-v' '-o' 'ConKuerer.exe' '-O3' '-std=c++11' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+ /pkg/gcc/4.7.1-el5/libexec/gcc/x86_64-pc-linux-gnu/4.7.1/cc1plus -quiet -v -D_GNU_SOURCE master.cpp -quiet -dumpbase master.cpp -mtune=generic -march=x86-64 -auxbase master -O3 -std=c++11 -version -o /tmp/ccTzuhhi.s
+GNU C++ (GCC) version 4.7.1 (x86_64-pc-linux-gnu)
+	compiled by GNU C version 4.7.1, GMP version 4.3.2, MPFR version 2.4.2, MPC version 0.8.1
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+ignoring duplicate directory "/pkg/gcc/4.7.1-el5/include"
+ignoring nonexistent directory "/pkg/gcc/4.7.1-el5/lib/gcc/x86_64-pc-linux-gnu/4.7.1/../../../../x86_64-pc-linux-gnu/include"
+#include "..." search starts here:
+#include <...> search starts here:
+ /pkg/gcc/4.7.1-el5/include
+ /pkg/gcc/4.7.1-el5/lib/gcc/x86_64-pc-linux-gnu/4.7.1/../../../../include/c++/4.7.1
+ /pkg/gcc/4.7.1-el5/lib/gcc/x86_64-pc-linux-gnu/4.7.1/../../../../include/c++/4.7.1/x86_64-pc-linux-gnu
+ /pkg/gcc/4.7.1-el5/lib/gcc/x86_64-pc-linux-gnu/4.7.1/../../../../include/c++/4.7.1/backward
+ /pkg/gcc/4.7.1-el5/lib/gcc/x86_64-pc-linux-gnu/4.7.1/include
+ /usr/local/include
+ /pkg/gcc/4.7.1-el5/lib/gcc/x86_64-pc-linux-gnu/4.7.1/include-fixed
+ /usr/include
+End of search list.
+GNU C++ (GCC) version 4.7.1 (x86_64-pc-linux-gnu)
+	compiled by GNU C version 4.7.1, GMP version 4.3.2, MPFR version 2.4.2, MPC version 0.8.1
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+Compiler executable checksum: 6ed99163b1bffda2ca9d37141bca0d08
+COLLECT_GCC_OPTIONS='-v' '-o' 'ConKuerer.exe' '-O3' '-std=c++11' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+ as -v --64 -o /tmp/cc5cbLRb.o /tmp/ccTzuhhi.s
+GNU assembler version 2.17.50.0.6-20.el5_8.3 (x86_64-redhat-linux) using BFD version 2.17.50.0.6-20.el5_8.3 20061020
+COLLECT_GCC_OPTIONS='-v' '-o' 'ConKuerer.exe' '-O3' '-std=c++11' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+ /pkg/gcc/4.7.1-el5/libexec/gcc/x86_64-pc-linux-gnu/4.7.1/cc1plus -quiet -v -D_GNU_SOURCE headers.h -quiet -dumpbase headers.h -mtune=generic -march=x86-64 -auxbase headers -O3 -std=c++11 -version -o /tmp/ccTzuhhi.s --output-pch= ConKuerer.exe
+GNU C++ (GCC) version 4.7.1 (x86_64-pc-linux-gnu)
+	compiled by GNU C version 4.7.1, GMP version 4.3.2, MPFR version 2.4.2, MPC version 0.8.1
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+ignoring duplicate directory "/pkg/gcc/4.7.1-el5/include"
+ignoring nonexistent directory "/pkg/gcc/4.7.1-el5/lib/gcc/x86_64-pc-linux-gnu/4.7.1/../../../../x86_64-pc-linux-gnu/include"
+#include "..." search starts here:
+#include <...> search starts here:
+ /pkg/gcc/4.7.1-el5/include
+ /pkg/gcc/4.7.1-el5/lib/gcc/x86_64-pc-linux-gnu/4.7.1/../../../../include/c++/4.7.1
+ /pkg/gcc/4.7.1-el5/lib/gcc/x86_64-pc-linux-gnu/4.7.1/../../../../include/c++/4.7.1/x86_64-pc-linux-gnu
+ /pkg/gcc/4.7.1-el5/lib/gcc/x86_64-pc-linux-gnu/4.7.1/../../../../include/c++/4.7.1/backward
+ /pkg/gcc/4.7.1-el5/lib/gcc/x86_64-pc-linux-gnu/4.7.1/include
+ /usr/local/include
+ /pkg/gcc/4.7.1-el5/lib/gcc/x86_64-pc-linux-gnu/4.7.1/include-fixed
+ /usr/include
+End of search list.
+GNU C++ (GCC) version 4.7.1 (x86_64-pc-linux-gnu)
+	compiled by GNU C version 4.7.1, GMP version 4.3.2, MPFR version 2.4.2, MPC version 0.8.1
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+Compiler executable checksum: 6ed99163b1bffda2ca9d37141bca0d08
+COLLECT_GCC_OPTIONS='-v' '-o' 'ConKuerer.exe' '-O3' '-std=c++11' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+ /pkg/gcc/4.7.1-el5/libexec/gcc/x86_64-pc-linux-gnu/4.7.1/cc1plus -quiet -v -D_GNU_SOURCE master.h -quiet -dumpbase master.h -mtune=generic -march=x86-64 -auxbase master -O3 -std=c++11 -version -o /tmp/ccTzuhhi.s --output-pch= ConKuerer.exe
+GNU C++ (GCC) version 4.7.1 (x86_64-pc-linux-gnu)
+	compiled by GNU C version 4.7.1, GMP version 4.3.2, MPFR version 2.4.2, MPC version 0.8.1
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+ignoring duplicate directory "/pkg/gcc/4.7.1-el5/include"
+ignoring nonexistent directory "/pkg/gcc/4.7.1-el5/lib/gcc/x86_64-pc-linux-gnu/4.7.1/../../../../x86_64-pc-linux-gnu/include"
+#include "..." search starts here:
+#include <...> search starts here:
+ /pkg/gcc/4.7.1-el5/include
+ /pkg/gcc/4.7.1-el5/lib/gcc/x86_64-pc-linux-gnu/4.7.1/../../../../include/c++/4.7.1
+ /pkg/gcc/4.7.1-el5/lib/gcc/x86_64-pc-linux-gnu/4.7.1/../../../../include/c++/4.7.1/x86_64-pc-linux-gnu
+ /pkg/gcc/4.7.1-el5/lib/gcc/x86_64-pc-linux-gnu/4.7.1/../../../../include/c++/4.7.1/backward
+ /pkg/gcc/4.7.1-el5/lib/gcc/x86_64-pc-linux-gnu/4.7.1/include
+ /usr/local/include
+ /pkg/gcc/4.7.1-el5/lib/gcc/x86_64-pc-linux-gnu/4.7.1/include-fixed
+ /usr/include
+End of search list.
+GNU C++ (GCC) version 4.7.1 (x86_64-pc-linux-gnu)
+	compiled by GNU C version 4.7.1, GMP version 4.3.2, MPFR version 2.4.2, MPC version 0.8.1
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+Compiler executable checksum: 6ed99163b1bffda2ca9d37141bca0d08
+COLLECT_GCC_OPTIONS='-v' '-o' 'ConKuerer.exe' '-O3' '-std=c++11' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+ /pkg/gcc/4.7.1-el5/libexec/gcc/x86_64-pc-linux-gnu/4.7.1/cc1plus -quiet -v -D_GNU_SOURCE utils.h -quiet -dumpbase utils.h -mtune=generic -march=x86-64 -auxbase utils -O3 -std=c++11 -version -o /tmp/ccTzuhhi.s --output-pch= ConKuerer.exe
+GNU C++ (GCC) version 4.7.1 (x86_64-pc-linux-gnu)
+	compiled by GNU C version 4.7.1, GMP version 4.3.2, MPFR version 2.4.2, MPC version 0.8.1
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+ignoring duplicate directory "/pkg/gcc/4.7.1-el5/include"
+ignoring nonexistent directory "/pkg/gcc/4.7.1-el5/lib/gcc/x86_64-pc-linux-gnu/4.7.1/../../../../x86_64-pc-linux-gnu/include"
+#include "..." search starts here:
+#include <...> search starts here:
+ /pkg/gcc/4.7.1-el5/include
+ /pkg/gcc/4.7.1-el5/lib/gcc/x86_64-pc-linux-gnu/4.7.1/../../../../include/c++/4.7.1
+ /pkg/gcc/4.7.1-el5/lib/gcc/x86_64-pc-linux-gnu/4.7.1/../../../../include/c++/4.7.1/x86_64-pc-linux-gnu
+ /pkg/gcc/4.7.1-el5/lib/gcc/x86_64-pc-linux-gnu/4.7.1/../../../../include/c++/4.7.1/backward
+ /pkg/gcc/4.7.1-el5/lib/gcc/x86_64-pc-linux-gnu/4.7.1/include
+ /usr/local/include
+ /pkg/gcc/4.7.1-el5/lib/gcc/x86_64-pc-linux-gnu/4.7.1/include-fixed
+ /usr/include
+End of search list.
+GNU C++ (GCC) version 4.7.1 (x86_64-pc-linux-gnu)
+	compiled by GNU C version 4.7.1, GMP version 4.3.2, MPFR version 2.4.2, MPC version 0.8.1
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+Compiler executable checksum: 6ed99163b1bffda2ca9d37141bca0d08
+COMPILER_PATH=/pkg/gcc/4.7.1-el5/libexec/gcc/x86_64-pc-linux-gnu/4.7.1/:/pkg/gcc/4.7.1-el5/libexec/gcc/x86_64-pc-linux-gnu/4.7.1/:/pkg/gcc/4.7.1-el5/libexec/gcc/x86_64-pc-linux-gnu/:/pkg/gcc/4.7.1-el5/lib/gcc/x86_64-pc-linux-gnu/4.7.1/:/pkg/gcc/4.7.1-el5/lib/gcc/x86_64-pc-linux-gnu/
+LIBRARY_PATH=/pkg/gcc/4.7.1-el5/lib/gcc/x86_64-pc-linux-gnu/4.7.1/:/pkg/gcc/4.7.1-el5/lib/gcc/x86_64-pc-linux-gnu/4.7.1/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/pkg/gcc/4.7.1-el5/lib/gcc/x86_64-pc-linux-gnu/4.7.1/../../../:/lib/:/usr/lib/
+COLLECT_GCC_OPTIONS='-v' '-o' 'ConKuerer.exe' '-O3' '-std=c++11' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+ /pkg/gcc/4.7.1-el5/libexec/gcc/x86_64-pc-linux-gnu/4.7.1/collect2 --eh-frame-hdr -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o ConKuerer.exe /usr/lib/../lib64/crt1.o /usr/lib/../lib64/crti.o /pkg/gcc/4.7.1-el5/lib/gcc/x86_64-pc-linux-gnu/4.7.1/crtbegin.o -L/pkg/gcc/4.7.1-el5/lib/gcc/x86_64-pc-linux-gnu/4.7.1 -L/pkg/gcc/4.7.1-el5/lib/gcc/x86_64-pc-linux-gnu/4.7.1/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/pkg/gcc/4.7.1-el5/lib/gcc/x86_64-pc-linux-gnu/4.7.1/../../.. /tmp/cc55Z4lQ.o /tmp/cc5cbLRb.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /pkg/gcc/4.7.1-el5/lib/gcc/x86_64-pc-linux-gnu/4.7.1/crtend.o /usr/lib/../lib64/crtn.o
