@@ -17,13 +17,13 @@ typedef enum
 	OPPONENT_PIECE=-1,
 	NO_PIECE,
 	MY_PIECE,
-    THREATS
+	THREATS
 } movetype;
 typedef enum
 {
 	TIME_UP,
-    WIN,
-    LOSS,
+	WIN,
+	LOSS,
 	TOO_MANY
 } ERRORS;
 typedef std::chrono::duration<int,std::milli> ms;

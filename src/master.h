@@ -117,17 +117,17 @@ THEN:
 			}
 			return mv(_mv(-1,-1),NO_PIECE);
 	};
-    void determine_moves_made()
-    {
-        moves_made=0;
-        for (int i = 0; i<ROWS; i++)
-            for (int j = 0; j<COLS; j++)
-            {
-                if (GameStates[i][j]!=NO_PIECE && GameStates[i][j]!=THREATS) 
-                    moves_made++;
-            }
-       return;
-    };
+	void determine_moves_made()
+	{
+		moves_made=0;
+		for (int i = 0; i<ROWS; i++)
+			for (int j = 0; j<COLS; j++)
+			{
+				if (GameStates[i][j]!=NO_PIECE && GameStates[i][j]!=THREATS)
+					moves_made++;
+			}
+			return;
+	};
 	std::vector<mv> getAllMoves(const states& States,movetype mt=MY_PIECE)
 	{
 #if LOGGING
@@ -169,9 +169,9 @@ SKIP:
 						if ((it)->coord.first==i && (it)->coord.second==j) goto THEN;
 					out.push_back( mv(_mv(i,j),mt) );
 					if (gravity) goto SKIP;
-                    continue;
+					continue;
 				}
-                else continue;
+				else continue;
 THEN:
 				{
 #if LOGGING
@@ -216,7 +216,7 @@ SKIP:
 		/*if (S[c][r]!=NO_PIECE)
 		return false;
 		else*/
-        if (move.first.first<0 || move.first.second<0) return;
+		if (move.first.first<0 || move.first.second<0) return;
 		S[move.first.first][move.first.second]=move.second;
 		return;
 	};
@@ -250,7 +250,7 @@ SKIP:
 	return;
 	};*/
 
-    void print_board();
+	void print_board();
 
 	/* ====================  UTILITIES     ======================================= */
 	float connections (movetype TYPE=MY_PIECE);
@@ -283,7 +283,7 @@ protected:
 	int ROWS,COLS;
 	float alpha,beta,curval;
 	int K,moves_made, moves_left;
-    movetype whose_turn;
+	movetype whose_turn;
 	mv lastmove;
 	bool gravity;
 	std::priority_queue<KTreeNode_,std::vector<KTreeNode_>,cmpr_1> Frontier;
